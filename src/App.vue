@@ -12,4 +12,8 @@ export default {
 
 <style>
 @import "normalize.css";
+
+body {
+  height: 2000px;
+}
 </style>

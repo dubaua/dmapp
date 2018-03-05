@@ -1,7 +1,7 @@
 <template lang="pug">
   tr
     td
-      button {{combatant.card.path}}
+      button(@click="$emit('my-event', combatant.card.path)") {{combatant.card.path}}
     td {{combatant.name}}
     td
       input(type="number", v-model.number.lazy="combatant.initiative")
@@ -25,11 +25,13 @@ export default {
   name: "Combatant",
   props: {
     combatant: {
-      default() {
-        return null;
-      },
+      default: null,
       type: Object
-    }
+    },
+    showCard: {
+      default: null,
+      type: Function
+    },
   }
 };
 </script>

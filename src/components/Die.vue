@@ -6,6 +6,8 @@
 </template>
 
 <script>
+const LOG_LENGTH = 10;
+
 export default {
   name: "Die",
   props: {
@@ -22,10 +24,22 @@ export default {
   },
   methods: {
     roll(range) {
-      const result = Math.floor(Math.random() * range) + 1;
-      this.log.unshift(result);
+      const result = this.randomUpTo(range);
+      this.addToLog(result);
+      this.updateResult(result);
+    },
+    randomUpTo(range) {
+      return Math.floor(Math.random() * range) + 1;
+    },
+    updateResult(result) {
       this.result = result;
-    }
+    },
+    addToLog(entry) {
+      if (this.log.length === LOG_LENGTH) {
+        this.log.pop();
+      }
+      this.log.unshift(entry);
+    },
   }
 };
 </script>
@@ -34,6 +48,11 @@ export default {
 .die {
   display: flex;
   align-items: baseline;
+
+  & button {
+    min-width: 32px;
+    text-align: center;
+  }
 }
 .log {
   display: flex;

@@ -17,17 +17,21 @@
       combatant(
         v-for="combatant in sortedCombatants",
         :key="combatant.id",
-        :combatant="combatant")
+        :combatant="combatant",
+        @my-event="showCard")
+    effect-constructor
 </template>
 
 <script>
 import Combatant from "@/components/Combatant";
+import EffectConstructor from "@/components/EffectConstructor";
 
 // some commetn
 export default {
   name: "Tracker",
   components: {
-    Combatant
+    Combatant,
+    EffectConstructor
   },
   data() {
     return {
@@ -102,7 +106,13 @@ export default {
     targets() {
       return this.combatants.filter(combatant => combatant.target);
     }
-  }
+  },
+  methods: {
+    showCard(url) {
+      // eslint-disable-next-line
+      console.log(url);
+    }
+  },
 };
 </script>
 
