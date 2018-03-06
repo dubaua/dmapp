@@ -1,70 +1,138 @@
 <template lang="pug">
-  .draginput(@mousedown="startDrag")
+  .draginput(@mousedown="wait", @mouseup="clear")
     .draginput__overlay(
       v-if="isDragging",
-      @mouseup="endDrag",
+      @mouseup="clear",
       @mousemove="adjust",
     )
-      .draginput__number {{number}}
-    input.draginput__input(v-model="number")
+      .draginput__number {{value}}
+      .draginput__helper(:style="helperStyle")
+    input.draginput__input(v-model="value")
 </template>
 
 <script>
+// function getSize(x, y) {
+//   return Math.max(1600 - x, x, 900 - y, y);
+// }
+
+/* eslint-disable no-mixed-operators, no-console */
+const ADJUST_DELAY = 150;
+
 export default {
   name: "DragInput",
   props: {
-    range: {
-      default: 20,
-      type: Number
-    }
+    value: {
+      default: 0,
+      type: Number,
+      required: true,
+    },
+    isLinear: {
+      default: true,
+      type: Boolean,
+    },
+    min: {
+      default: 0,
+      type: Number,
+    },
+    max: {
+      default: 100,
+      type: Number,
+    },
   },
   data() {
     return {
-      number: 0,
       isDragging: false,
-      startX: 0,
-      startY: 0,
+      timer: null,
+      input: null,
+      x: 0,
+      y: 0
     };
   },
+  computed: {
+    helperStyle() {
+      return `
+        left: ${this.x}px;
+        top: ${this.y}px;
+        width: ${this.radius * 2}px;
+        height: ${this.radius * 2}px;`;
+    },
+    radius() {
+      const ww = window.innerWidth;
+      const wh = window.innerHeight;
+      if (this.isLinear) {
+        return Math.max(ww - this.x, this.x, wh - this.y, this.y) - 32;
+      }
+      return (
+        Math.min(Math.max(ww - this.x, this.x), Math.max(wh - this.y, this.y)) -
+        16
+      );
+    }
+  },
   methods: {
-    startDrag(e) {
-      // set start x, y
-      this.startX = e.clientX;
-      this.startY = e.clientY;
-      // if user hold mouse/tap more than 150 ms - toggle dragging
-      // else - set focus on input
-      this.isDragging = true;
+    wait(e) {
+      console.log("wait");
+
+      this.x = e.clientX;
+      this.y = e.clientY;
+      this.input = e.target;
+
+      this.timer = setTimeout(() => {
+        this.isDragging = true;
+      }, ADJUST_DELAY);
+
+      e.preventDefault();
     },
-    endDrag() {
-      this.startX = 0;
-      this.startY = 0;
+    clear(e) {
+      console.log("clear");
+      this.x = 0;
+      this.y = 0;
+      clearTimeout(this.timer);
+      if (!this.isDragging) {
+        this.input.focus();
+      }
       this.isDragging = false;
+      e.stopPropagation();
     },
-    // if user move mouse - adjust our value
     adjust(e) {
-      this.number = Math.floor((e.clientX - this.startX) / 10);
-      // console.log(e);
-    },
+      const result = Math.floor(
+        Math.sqrt(
+          Math.abs(e.clientX - this.x) ** 2 + Math.abs(e.clientY - this.y) ** 2
+        ) /
+          this.radius *
+          this.max
+      );
+      this.value = result > this.max ? this.max : result;
+    }
   }
 };
 </script>
 
 <style lang="scss">
-.draginput__overlay {
-  background: rgba(0,0,0,.75);
-  z-index: 1000;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.draginput__number {
-  font-size: 80px;
-  color: white;
-  user-select: none;
+.draginput {
+  &__overlay {
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  &__number {
+    font-size: 80px;
+    color: white;
+    user-select: none;
+  }
+  &__helper {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.33);
+    z-index: 1001;
+  }
 }
 </style>
