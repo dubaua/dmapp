@@ -1,22 +1,18 @@
 <template lang="pug">
-  .draginput(@mousedown="wait", @mouseup="clear")
+  .draginput(@mousedown="supposeAdjastment", @mouseup="clear")
     .draginput__overlay(
-      v-if="isDragging",
+      v-if="isAdjusting",
       @mouseup="clear",
       @mousemove="adjust",
     )
-      .draginput__number {{value}}
+      .draginput__number {{temporaryValue}}
       .draginput__helper(:style="helperStyle")
     input.draginput__input(v-model="value")
 </template>
 
 <script>
-// function getSize(x, y) {
-//   return Math.max(1600 - x, x, 900 - y, y);
-// }
-
 /* eslint-disable no-mixed-operators, no-console */
-const ADJUST_DELAY = 150;
+// const ADJUST_DELAY = 250;
 
 export default {
   name: "DragInput",
@@ -24,28 +20,35 @@ export default {
     value: {
       default: 0,
       type: Number,
-      required: true,
+      required: true
     },
     isLinear: {
       default: true,
-      type: Boolean,
+      type: Boolean
     },
     min: {
       default: 0,
-      type: Number,
+      type: Number
     },
     max: {
       default: 100,
-      type: Number,
+      type: Number
     },
+    onUpdate: {
+      type: Function,
+      default: ()=>{}
+    }
   },
   data() {
     return {
-      isDragging: false,
-      timer: null,
-      input: null,
+      isAdjusting: false,
+      // isTicking: false,
+      // requestId: null,
+      // inputEl: null,
+      // start: null,
       x: 0,
-      y: 0
+      y: 0,
+      temporaryValue: this.min
     };
   },
   computed: {
@@ -69,39 +72,60 @@ export default {
     }
   },
   methods: {
-    wait(e) {
-      console.log("wait");
-
+    supposeAdjastment(e) {
+      console.log("supposeAdjastment");
       this.x = e.clientX;
       this.y = e.clientY;
-      this.input = e.target;
-
-      this.timer = setTimeout(() => {
-        this.isDragging = true;
-      }, ADJUST_DELAY);
-
+      // this.inputEl = e.target;
+      // // start count. if counted to ADJUST DELAY -> start adjusting, else focus
+      // this.start = performance.now();
+      // this.isTicking = true;
+      // this.requestId = requestAnimationFrame(this.startCount);
+      this.isAdjusting = true;
       e.preventDefault();
     },
+    // startCount(time) {
+    //   console.log("tick");
+
+    //   // определить, сколько прошло времени с начала анимации
+    //   const timePassed = time - this.start;
+    //   // если время анимации не закончилось - запланировать ещё кадр
+    //   if (this.isTicking && timePassed < ADJUST_DELAY) {
+    //     requestAnimationFrame(this.startCount);
+    //   }
+    //   if (this.isTicking && timePassed >= ADJUST_DELAY) {
+    //     this.stopCount();
+    //     this.isAdjusting = true;
+    //   }
+    // },
+    // stopCount() {
+    //   this.isTicking = false;
+    //   cancelAnimationFrame(this.requestId);
+    // },
     clear(e) {
-      console.log("clear");
+      console.log("clear", this.onUpdate);
       this.x = 0;
       this.y = 0;
-      clearTimeout(this.timer);
-      if (!this.isDragging) {
-        this.input.focus();
-      }
-      this.isDragging = false;
+      // if(!this.isAdjusting) {
+      //   this.inputEl.focus();
+      // }
+      this.isAdjusting = false;
+      // this.stopCount();
+      this.$emit(this.onUpdate, this.temporaryValue);
       e.stopPropagation();
     },
+    getLengthByCoords(x2, x1, y2, y1) {
+      return Math.sqrt(Math.abs(x2 - x1) ** 2 + Math.abs(y2 - y1) ** 2);
+    },
     adjust(e) {
+      console.log(this.radius);
       const result = Math.floor(
-        Math.sqrt(
-          Math.abs(e.clientX - this.x) ** 2 + Math.abs(e.clientY - this.y) ** 2
-        ) /
-          this.radius *
-          this.max
+        this.min +
+          this.getLengthByCoords(e.clientX, this.x, e.clientY, this.y) /
+            this.radius *
+            (this.max - this.min)
       );
-      this.value = result > this.max ? this.max : result;
+      this.temporaryValue = result > this.max ? this.max : result;
     }
   }
 };
@@ -120,6 +144,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: default;
   }
   &__number {
     font-size: 80px;
@@ -130,8 +155,7 @@ export default {
     position: fixed;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed rgba(255, 255, 255, 0.33);
+    background: rgba(255, 255, 255, 0.05);
     z-index: 1001;
   }
 }
