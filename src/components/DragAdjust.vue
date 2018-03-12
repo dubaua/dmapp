@@ -1,18 +1,22 @@
 <template lang="pug">
-  .draginput(@mousedown="supposeAdjastment", @mouseup="clear")
+  .draginput(@mousedown="supposeAdjastment", @mouseup="clear", @mouseleave="clear")
     .draginput__overlay(
       v-if="isAdjusting",
       @mouseup="clear",
       @mousemove="adjust",
     )
       .draginput__number {{temporaryValue}}
-      .draginput__helper(:style="helperStyle")
+      .draginput__circle.draginput__center(:style="helperStyle(3)")
+      .draginput__circle.draginput__fader(:style="helperStyle(faderRadius)")
+      .draginput__circle.draginput__limiter(:style="helperStyle(limiterRadius)")
     input.draginput__input(v-model="value")
 </template>
 
 <script>
 /* eslint-disable no-mixed-operators, no-console */
-// const ADJUST_DELAY = 250;
+import throttle from "lodash/throttle";
+
+const ADJUST_DELAY = 150;
 
 export default {
   name: "DragInput",
@@ -34,99 +38,112 @@ export default {
       default: 100,
       type: Number
     },
-    onUpdate: {
+    update: {
       type: Function,
-      default: ()=>{}
+      default: () => {}
     }
   },
   data() {
     return {
       isAdjusting: false,
-      // isTicking: false,
-      // requestId: null,
-      // inputEl: null,
-      // start: null,
-      x: 0,
-      y: 0,
-      temporaryValue: this.min
+      timeoutId: null,
+      inputEl: null,
+      centerX: 0,
+      centerY: 0,
+      faderX: 0,
+      faderY: 0
     };
   },
   computed: {
-    helperStyle() {
-      return `
-        left: ${this.x}px;
-        top: ${this.y}px;
-        width: ${this.radius * 2}px;
-        height: ${this.radius * 2}px;`;
-    },
-    radius() {
+    limiterRadius() {
       const ww = window.innerWidth;
       const wh = window.innerHeight;
       if (this.isLinear) {
-        return Math.max(ww - this.x, this.x, wh - this.y, this.y) - 32;
+        return (
+          Math.max(
+            ww - this.centerX,
+            this.centerX,
+            wh - this.centerY,
+            this.centerY
+          ) - 32
+        );
       }
       return (
-        Math.min(Math.max(ww - this.x, this.x), Math.max(wh - this.y, this.y)) -
-        16
+        Math.min(
+          Math.max(ww - this.centerX, this.centerX),
+          Math.max(wh - this.centerY, this.centerY)
+        ) - 16
       );
+    },
+    faderRadius() {
+      const faderRadius = this.getRadiusByCoords(this.faderX, this.faderY);
+      return faderRadius > this.limiterRadius
+        ? this.limiterRadius
+        : faderRadius;
+    },
+    temporaryValue() {
+      const result = Math.floor(
+        this.min +
+          this.getRadiusByCoords(this.faderX, this.faderY) /
+            this.limiterRadius *
+            (this.max - this.min)
+      );
+      return result > this.max ? this.max : result;
     }
   },
   methods: {
+    helperStyle(radius) {
+      return `
+        left: ${this.centerX}px;
+        top: ${this.centerY}px;
+        width: ${radius * 2}px;
+        height: ${radius * 2}px;`;
+    },
     supposeAdjastment(e) {
-      console.log("supposeAdjastment");
-      this.x = e.clientX;
-      this.y = e.clientY;
-      // this.inputEl = e.target;
-      // // start count. if counted to ADJUST DELAY -> start adjusting, else focus
-      // this.start = performance.now();
-      // this.isTicking = true;
-      // this.requestId = requestAnimationFrame(this.startCount);
-      this.isAdjusting = true;
+      const x = e.clientX;
+      const y = e.clientY;
+      this.centerX = x;
+      this.faderX = x;
+      this.centerY = y;
+      this.faderY = y;
+
+      this.inputEl = e.target;
+
+      this.timeoutId = setTimeout(this.activate, ADJUST_DELAY);
       e.preventDefault();
     },
-    // startCount(time) {
-    //   console.log("tick");
-
-    //   // определить, сколько прошло времени с начала анимации
-    //   const timePassed = time - this.start;
-    //   // если время анимации не закончилось - запланировать ещё кадр
-    //   if (this.isTicking && timePassed < ADJUST_DELAY) {
-    //     requestAnimationFrame(this.startCount);
-    //   }
-    //   if (this.isTicking && timePassed >= ADJUST_DELAY) {
-    //     this.stopCount();
-    //     this.isAdjusting = true;
-    //   }
-    // },
-    // stopCount() {
-    //   this.isTicking = false;
-    //   cancelAnimationFrame(this.requestId);
-    // },
+    activate() {
+      this.isAdjusting = true;
+      this.resetTimer();
+    },
+    resetTimer() {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    },
     clear(e) {
-      console.log("clear", this.onUpdate);
-      this.x = 0;
-      this.y = 0;
-      // if(!this.isAdjusting) {
-      //   this.inputEl.focus();
-      // }
+      this.centerX = 0;
+      this.centerY = 0;
+      this.faderX = 0;
+      this.faderY = 0;
       this.isAdjusting = false;
-      // this.stopCount();
-      this.$emit(this.onUpdate, this.temporaryValue);
-      e.stopPropagation();
+
+      if (this.timeoutId) this.inputEl.focus();
+      this.inputEl = null;
+
+      this.resetTimer();
+      // this.$emit(this.update, this.temporaryValue);
+      if (e) e.stopPropagation();
     },
-    getLengthByCoords(x2, x1, y2, y1) {
-      return Math.sqrt(Math.abs(x2 - x1) ** 2 + Math.abs(y2 - y1) ** 2);
-    },
-    adjust(e) {
-      console.log(this.radius);
-      const result = Math.floor(
-        this.min +
-          this.getLengthByCoords(e.clientX, this.x, e.clientY, this.y) /
-            this.radius *
-            (this.max - this.min)
+    getRadiusByCoords(x, y) {
+      return Math.sqrt(
+        Math.abs(x - this.centerX) ** 2 + Math.abs(y - this.centerY) ** 2
       );
-      this.temporaryValue = result > this.max ? this.max : result;
-    }
+    },
+    // eslint-disable-next-line func-names
+    adjust: throttle(function (e) {
+      this.faderX = e.clientX;
+      this.faderY = e.clientY;
+    }, 16)
   }
 };
 </script>
@@ -145,18 +162,30 @@ export default {
     align-items: center;
     justify-content: center;
     cursor: default;
+    overflow: hidden;
   }
   &__number {
     font-size: 80px;
     color: white;
     user-select: none;
   }
-  &__helper {
-    position: fixed;
+  &__input {
+    cursor: pointer;
+  }
+  &__circle {
+    position: absolute;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
     z-index: 1001;
+  }
+  &__center {
+    background: white;
+  }
+  &__fader {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  &__limiter {
+    border: 1px solid white;
   }
 }
 </style>

@@ -21,7 +21,7 @@ export default {
         min: 0,
         max: 20,
         isLinear: true,
-        onUpdate: (newValue) => {
+        update: (newValue) => {
           console.log(newValue);
           Vue.set(this.val1, "value", newValue);
         }
@@ -31,7 +31,7 @@ export default {
         min: 100,
         max: 200,
         isLinear: false,
-        onUpdate: (newValue) => {
+        update: (newValue) => {
           console.log(newValue);
           Vue.set(this.val2, "value", newValue);
         }
