@@ -1,6 +1,6 @@
 <template lang="pug">
   .die
-    button(@click="roll(range)") {{ result || range }}
+    el-button(@click="roll(range)", type="primary") {{ result || range }}
     .log
       .log__entry(v-for="entry in log") {{ entry }}
 </template>

@@ -1,7 +1,7 @@
 <template lang="pug">
   tr
     td
-      button(@click="$emit('my-event', combatant.card.path)") {{combatant.card.path}}
+      el-button(@click="$emit('my-event', combatant.card.path)", type="primary", size="mini") Card
     td {{combatant.name}}
     td
       input(type="number", v-model.number.lazy="combatant.initiative")
@@ -14,9 +14,9 @@
     td
       input(type="number", v-model.number.lazy="combatant.hp")
     td
-      input(type="checkbox", v-model="combatant.target")
+      el-switch(v-model="combatant.target")
     td
-      input(type="checkbox", v-model="combatant.hit")
+      el-switch(v-model="combatant.hit")
     td effects
 </template>
 
@@ -36,4 +36,8 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+  input {
+    max-width: 50px;
+  }
+</style>

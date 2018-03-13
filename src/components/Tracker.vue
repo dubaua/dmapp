@@ -116,14 +116,16 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+@import "../styles/main.scss";
+
 table {
   border-collapse: collapse;
+  width: 100%;
 
   & td {
-    border: 1px solid #ccc;
-    padding: 2px 5px;
+    border-bottom: 1px solid $dust; // TODO grab from global colors
+    padding: 5px 10px;
   }
 }
 </style>

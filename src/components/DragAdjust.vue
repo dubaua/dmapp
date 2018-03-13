@@ -1,9 +1,17 @@
 <template lang="pug">
-  .draginput(@mousedown="supposeAdjastment", @mouseup="clear", @mouseleave="clear")
+  .draginput(
+    @mousedown="supposeAdjastment",
+    @touchstart="supposeAdjastment",
+    @mouseup="clear",
+    @mouseleave="clear",
+    @touchend="clear",
+    @touchcancel="clear",
+  )
     .draginput__overlay(
       v-if="isAdjusting",
-      @mouseup="clear",
       @mousemove="adjust",
+      @mouseup="clear",
+      @mouseleave="clear",
     )
       .draginput__number {{temporaryValue}}
       .draginput__circle.draginput__center(:style="helperStyle(3)")
@@ -100,8 +108,8 @@ export default {
         height: ${radius * 2}px;`;
     },
     supposeAdjastment(e) {
-      const x = e.clientX;
-      const y = e.clientY;
+      const x = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+      const y = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
       this.centerX = x;
       this.faderX = x;
       this.centerY = y;
@@ -113,6 +121,10 @@ export default {
       e.preventDefault();
     },
     activate() {
+      document.addEventListener("touchmove", this.adjust, false);
+      document.addEventListener("touchend", this.clear, false);
+      document.addEventListener("touchcancel", this.clear, false);
+
       this.isAdjusting = true;
       this.resetTimer();
     },
@@ -125,6 +137,11 @@ export default {
       this.centerY = 0;
       this.faderX = 0;
       this.faderY = 0;
+
+      document.removeEventListener("touchmove", this.adjust, false);
+      document.removeEventListener("touchend", this.clear, false);
+      document.removeEventListener("touchcancel", this.clear, false);
+
       this.isAdjusting = false;
 
       if (this.timeoutId) this.inputEl.focus();
@@ -141,8 +158,8 @@ export default {
     },
     // eslint-disable-next-line func-names
     adjust: throttle(function (e) {
-      this.faderX = e.clientX;
-      this.faderY = e.clientY;
+      this.faderX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+      this.faderY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
     }, 16)
   }
 };

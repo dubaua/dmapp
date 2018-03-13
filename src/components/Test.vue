@@ -1,7 +1,7 @@
 <template lang="pug">
   div
-    .chaos.chaos--2: drag-adjust(v-bind="val1")
-    .chaos.chaos--3: drag-adjust(v-bind="val2")
+    .chaos.chaos--1: drag-adjust(v-bind="val1")
+    .chaos.chaos--2: drag-adjust(v-bind="val2")
 </template>
 
 <script>
@@ -43,17 +43,16 @@ export default {
 
 <style lang="scss">
 .chaos {
-  position: fixed;
-  z-index: 1;
   display: inline-block;
+  vertical-align: top;
 
-  &--2 {
-    left: 20px;
-    top: 980px;
+  &--1 {
+    margin-left: 20px;
+    margin-top: 980px;
   }
-  &--3 {
-    left: 450px;
-    top: 270px;
+  &--2 {
+    margin-left: 450px;
+    margin-top: 270px;
   }
 }
 </style>

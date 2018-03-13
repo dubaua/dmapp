@@ -1,47 +1,56 @@
 <template lang="pug">
   .add-effect
     p Effect constructor
-    p
-      label(:for="'type_'+_uid") Effect Type:
-      select(:id="'type_'+_uid", v-model='chosen_type')
-        option(v-for='(type, index) in types', :value='index') {{type}}
+    p End condition:
+    el-radio-group(v-model="chosen_type", size="mini")
+      el-radio-button(label="0") Save ends
+      el-radio-button(label="1") Temporary
+      el-radio-button(label="2") Conditional
     p
       input.input.input_full(v-model='effect_text', placeholder='Effect text')
-    p
-      label(:for="'def_'+_uid") Modify defences
-      select(:id="'def_'+_uid", v-model="modifier")
-        option(v-for="n in modifiers", :value="n") {{n}}
-    p
-      input(
-        :id="'ac_'+_uid",
-        v-model='isAffectAC',
-        type='checkbox')
-      label(:for="'ac_'+_uid") AC
-      input(
-        :id="'fort_'+_uid",
-        v-model='isAffectFORT',
-        type='checkbox')
-      label(:for="'fort_'+_uid") Fort
-      input(
-        :id="'ref_'+_uid",
-        v-model='isAffectREF',
-        type='checkbox')
-      label(:for="'ref_'+_uid") Ref
-      input(
-        :id="'will_'+_uid",
-        v-model='isAffectWill',
-        type='checkbox')
-      label(:for="'will_'+_uid") Will
+
+    p Modify defenses
+    el-slider(
+      v-model="defenseModifier",
+      :min="-10",
+      :max="10",
+      show-input)
+    el-checkbox(v-model="affectDefence.ac", @change="handleCheckDefense", border) AC
+    el-checkbox(v-model="affectDefence.fort", @change="handleCheckDefense", border) Fort
+    el-checkbox(v-model="affectDefence.ref", @change="handleCheckDefense", border) Ref
+    el-checkbox(v-model="affectDefence.will", @change="handleCheckDefense", border) Will
+    el-checkbox(
+      :indeterminate="isDefensesIndeterminate",
+      v-model="allDefensesChecked",
+      @change="handleChangeAllDefenses") {{ allDefensesChecked ? 'Uncheck all' : 'Check all'}}
+
+    p Ongoing damage
+    el-slider(
+      v-model="ongoingDamage",
+      :min="0",
+      :max="25",
+      show-input)
+
+    p Regeneration
+    el-slider(
+      v-model="regeneration",
+      :min="0",
+      :max="25",
+      show-input)
     p Here process aftereffect and fail
     //- p(v-if='chosen_type === 1')
     //-   | Until {{end_turn}} turn
     //- p(v-if='chosen_type === 2')
     //-   input.input.input_full(v-model='special', placeholder='Special condition')
+    el-button Cancel
+    el-button(type="success") Submit effect
 </template>
 
 <script>
+/* eslint-disable no-console */
 // import Die from "@/components/Die";
-import range from "lodash/range";
+import Vue from "vue";
+import EFFECT_TYPES from "@/enums/effectEndTypes";
 
 export default {
   name: "EffectConstructor",
@@ -50,31 +59,54 @@ export default {
   },
   data() {
     return {
-      types: ["save ends", "temporary", "conditional"],
+      types: EFFECT_TYPES,
       chosen_type: 0,
-      fail: null, // nested effect, if type of save ends
-      aftereffect: null, // nested effect, if type of save ends
-      endTurn: 0, // if type of temporary
-      endCondition: "", // if type of conditional
+
+      // if save ends so we can add aftereffect and fail effect
+      fail: null,
+      aftereffect: null,
+
+      // if temporary we can adjust end turn
+      endTurn: 0,
+
+      // if conditional we should set end condition
+      endCondition: "",
+
+      // here we set conditions than effect cause
       conditions: null,
-      modifier: 0,
-      isAffectAC: false,
-      isAffectFORT: false,
-      isAffectREF: false,
-      isAffectWill: false,
-      effect_text: ""
+      // and custom text
+      effect_text: "",
+
+      ongoingDamage: 0,
+      regeneration: 0,
+
+      affectDefence: {
+        ac: true,
+        fort: true,
+        ref: true,
+        will: true
+      },
+      allDefensesChecked: true,
+      isDefensesIndeterminate: false,
+      defenseModifier: 0,
     };
   },
-  computed: {
-    modifiers() {
-      return range(-10, 11);
+  methods: {
+    handleChangeAllDefenses(newValue) {
+      Object.keys(this.affectDefence).map(key =>
+        Vue.set(this.affectDefence, key, newValue)
+      );
+      this.isDefensesIndeterminate = false;
+    },
+    handleCheckDefense() {
+      const defenseKeys = Object.keys(this.affectDefence);
+      const checkedCount = defenseKeys.filter(key => this.affectDefence[key])
+        .length;
+      this.allDefensesChecked = checkedCount === defenseKeys.length;
+      this.isDefensesIndeterminate =
+        checkedCount > 0 && checkedCount < defenseKeys.length;
     }
   }
-  // mounted() {
-  //   this.$nextTick(() => {
-  //     console.log(range(-10, 10));
-  //   });
-  // }
 };
 </script>
 
