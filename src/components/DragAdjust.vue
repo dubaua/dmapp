@@ -133,11 +133,6 @@ export default {
       this.timeoutId = null;
     },
     clear(e) {
-      this.centerX = 0;
-      this.centerY = 0;
-      this.faderX = 0;
-      this.faderY = 0;
-
       document.removeEventListener("touchmove", this.adjust, false);
       document.removeEventListener("touchend", this.clear, false);
       document.removeEventListener("touchcancel", this.clear, false);
@@ -148,7 +143,13 @@ export default {
       this.inputEl = null;
 
       this.resetTimer();
-      // this.$emit(this.update, this.temporaryValue);
+      this.$emit("input", this.temporaryValue);
+
+      this.centerX = 0;
+      this.centerY = 0;
+      this.faderX = 0;
+      this.faderY = 0;
+
       if (e) e.stopPropagation();
     },
     getRadiusByCoords(x, y) {

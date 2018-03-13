@@ -1,7 +1,7 @@
 <template lang="pug">
   div
-    .chaos.chaos--1: drag-adjust(v-bind="val1")
-    .chaos.chaos--2: drag-adjust(v-bind="val2")
+    .chaos.chaos--1: drag-adjust(v-bind="val1", @input="val1.update")
+    .chaos.chaos--2: drag-adjust(v-bind="val2", @input="val2.update")
 </template>
 
 <script>
