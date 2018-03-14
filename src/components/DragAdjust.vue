@@ -10,21 +10,22 @@
     .draginput__overlay(
       v-if="isAdjusting",
       @mousemove="adjust",
-      @mouseup="clear",
-      @mouseleave="clear",
+      @mouseup="submit",
+      @mouseleave="submit",
     )
       .draginput__number {{temporaryValue}}
-      .draginput__circle.draginput__center(:style="helperStyle(3)")
-      .draginput__circle.draginput__fader(:style="helperStyle(faderRadius)")
-      .draginput__circle.draginput__limiter(:style="helperStyle(limiterRadius)")
+      .draginput__circle.draginput__center(:style="circleStyle(3)")
+      .draginput__circle.draginput__fader(:style="circleStyle(faderRadius)")
+      .draginput__circle.draginput__limiter(:style="circleStyle(limiterRadius)")
     input.draginput__input(v-model="value")
 </template>
 
 <script>
 /* eslint-disable no-mixed-operators, no-console */
-// import throttle from "lodash/throttle";
 
+// time to hold touch or mouse to show overlay
 const ADJUST_DELAY = 150;
+const LIMITER_MARGIN = 32;
 
 export default {
   name: "DragInput",
@@ -33,10 +34,6 @@ export default {
       default: 0,
       type: Number,
       required: true
-    },
-    isLinear: {
-      default: true,
-      type: Boolean
     },
     min: {
       default: 0,
@@ -53,89 +50,78 @@ export default {
   },
   data() {
     return {
+      temporaryValue: this.min,
       isAdjusting: false,
       timeoutId: null,
       inputEl: null,
-      centerX: 0,
-      centerY: 0,
-      faderX: 0,
-      faderY: 0
+      center: {
+        x: 0,
+        y: 0
+      },
+      fader: {
+        x: 0,
+        y: 0
+      }
     };
   },
   computed: {
     limiterRadius() {
       const ww = window.innerWidth;
       const wh = window.innerHeight;
-      if (this.isLinear) {
-        return (
-          Math.max(
-            ww - this.centerX,
-            this.centerX,
-            wh - this.centerY,
-            this.centerY
-          ) - 32
-        );
-      }
       return (
-        Math.min(
-          Math.max(ww - this.centerX, this.centerX),
-          Math.max(wh - this.centerY, this.centerY)
-        ) - 16
+        Math.max(
+          ww - this.center.x,
+          this.center.x,
+          wh - this.center.y,
+          this.center.y
+        ) - LIMITER_MARGIN
       );
     },
     faderRadius() {
-      const faderRadius = this.getRadiusByCoords(this.faderX, this.faderY);
+      const faderRadius = this.getRadiusByCoords(this.fader.x, this.fader.y);
       return faderRadius > this.limiterRadius
         ? this.limiterRadius
         : faderRadius;
-    },
-    temporaryValue() {
-      const result = Math.floor(
-        this.min +
-          this.getRadiusByCoords(this.faderX, this.faderY) /
-            this.limiterRadius *
-            (this.max - this.min)
-      );
-      return result > this.max ? this.max : result;
     }
   },
   methods: {
-    helperStyle(radius) {
-      return `
-        left: ${this.centerX}px;
-        top: ${this.centerY}px;
-        width: ${radius * 2}px;
-        height: ${radius * 2}px;`;
-    },
     supposeAdjastment(e) {
-      const x = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-      const y = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
-      this.centerX = x;
-      this.faderX = x;
-      this.centerY = y;
-      this.faderY = y;
+      const { x, y } = this.getEventCoords(e);
+      this.setCenter(x, y);
+      this.setFader(x, y);
 
       this.inputEl = e.target;
 
-      this.timeoutId = setTimeout(this.activate, ADJUST_DELAY);
+      this.setTimer(this.activate, ADJUST_DELAY);
       e.preventDefault();
     },
     activate() {
-      document.addEventListener("touchmove", this.adjust, false);
-      document.addEventListener("touchend", this.clear, false);
-      document.addEventListener("touchcancel", this.clear, false);
-
+      this.addTouchListeners();
       this.isAdjusting = true;
       this.resetTimer();
     },
-    resetTimer() {
-      clearTimeout(this.timeoutId);
-      this.timeoutId = null;
+    adjust(e) {
+      requestAnimationFrame(() => {
+        const { x, y } = this.getEventCoords(e);
+        this.fader.x = x;
+        this.fader.y = y;
+        this.temporaryValue = Math.min(
+          this.max,
+          Math.floor(
+            this.min +
+              this.getRadiusByCoords(x, y) /
+                this.limiterRadius *
+                (this.max - this.min)
+          )
+        );
+      });
+    },
+    submit(e) {
+      this.$emit("input", this.temporaryValue);
+      this.clear(e);
     },
     clear(e) {
-      document.removeEventListener("touchmove", this.adjust, false);
-      document.removeEventListener("touchend", this.clear, false);
-      document.removeEventListener("touchcancel", this.clear, false);
+      this.removeTouchListeners();
 
       this.isAdjusting = false;
 
@@ -143,32 +129,52 @@ export default {
       this.inputEl = null;
 
       this.resetTimer();
-      this.$emit("input", this.temporaryValue);
 
-      this.centerX = 0;
-      this.centerY = 0;
-      this.faderX = 0;
-      this.faderY = 0;
+      this.setCenter(0, 0);
+      this.setFader(0, 0);
 
       if (e) e.stopPropagation();
     },
+    setTimer(callback, delay) {
+      this.timeoutId = setTimeout(callback, delay);
+    },
+    resetTimer() {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    },
+    setCenter(x, y) {
+      this.center = { x, y };
+    },
+    setFader(x, y) {
+      this.fader = { x, y };
+    },
+    addTouchListeners() {
+      document.addEventListener("touchmove", this.adjust, false);
+      document.addEventListener("touchend", this.submit, false);
+      document.addEventListener("touchcancel", this.submit, false);
+    },
+    removeTouchListeners() {
+      document.removeEventListener("touchmove", this.adjust, false);
+      document.removeEventListener("touchend", this.submit, false);
+      document.removeEventListener("touchcancel", this.submit, false);
+    },
+    getEventCoords(e) {
+      const x = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+      const y = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
+      return { x, y };
+    },
     getRadiusByCoords(x, y) {
       return Math.sqrt(
-        Math.abs(x - this.centerX) ** 2 + Math.abs(y - this.centerY) ** 2
+        Math.abs(x - this.center.x) ** 2 + Math.abs(y - this.center.y) ** 2
       );
     },
-    // eslint-disable-next-line func-names
-    // adjust: throttle(function (e) {
-    //   this.faderX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-    //   this.faderY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
-    // }, 16),
-    // eslint-disable-next-line func-names
-    adjust(e) {
-      requestAnimationFrame(() => {
-        this.faderX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-        this.faderY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
-      });
-    },
+    circleStyle(radius) {
+      return `
+        left: ${this.center.x}px;
+        top: ${this.center.y}px;
+        width: ${radius * 2}px;
+        height: ${radius * 2}px;`;
+    }
   }
 };
 </script>

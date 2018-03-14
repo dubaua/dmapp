@@ -1,12 +1,10 @@
 <template lang="pug">
   div
-    .chaos.chaos--1: drag-adjust(v-bind="val1", @input="val1.update")
-    .chaos.chaos--2: drag-adjust(v-bind="val2", @input="val2.update")
+    .test.test--1: drag-adjust(v-model="test1", :min="0", :max="20")
+    .test.test--2: drag-adjust(v-model="test2", :min="100", :max="200")
 </template>
 
 <script>
-/* eslint-disable no-mixed-operators, no-console */
-import Vue from "vue";
 import DragAdjust from "@/components/DragAdjust";
 
 export default {
@@ -16,33 +14,15 @@ export default {
   },
   data() {
     return {
-      val1: {
-        value: 15,
-        min: 0,
-        max: 20,
-        isLinear: true,
-        update: (newValue) => {
-          console.log(newValue);
-          Vue.set(this.val1, "value", newValue);
-        }
-      },
-      val2: {
-        value: 150,
-        min: 100,
-        max: 200,
-        isLinear: false,
-        update: (newValue) => {
-          console.log(newValue);
-          Vue.set(this.val2, "value", newValue);
-        }
-      }
+      test1: 7,
+      test2: 165,
     };
   }
 };
 </script>
 
 <style lang="scss">
-.chaos {
+.test {
   display: inline-block;
   vertical-align: top;
 
