@@ -22,7 +22,7 @@
 
 <script>
 /* eslint-disable no-mixed-operators, no-console */
-import throttle from "lodash/throttle";
+// import throttle from "lodash/throttle";
 
 const ADJUST_DELAY = 150;
 
@@ -158,10 +158,17 @@ export default {
       );
     },
     // eslint-disable-next-line func-names
-    adjust: throttle(function (e) {
-      this.faderX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-      this.faderY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
-    }, 16)
+    // adjust: throttle(function (e) {
+    //   this.faderX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+    //   this.faderY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
+    // }, 16),
+    // eslint-disable-next-line func-names
+    adjust(e) {
+      requestAnimationFrame(() => {
+        this.faderX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+        this.faderY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
+      });
+    },
   }
 };
 </script>
