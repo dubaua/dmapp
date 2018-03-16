@@ -1,47 +1,62 @@
 <template lang="pug">
-  .add-effect
-    p Effect constructor
-    p End condition:
-    el-radio-group(v-model="chosen_type", size="mini")
-      el-radio-button(label="0") Save ends
-      el-radio-button(label="1") Temporary
-      el-radio-button(label="2") Conditional
+  .effect-constructor
+    h1 Effect constructor
+    .container
+      .row.middle-xs
+        .col-xs-3
+          el-radio-group(v-model="chosen_type")
+            el-radio-button(:label="0") Save ends
+            el-radio-button(:label="1") Temporary
+            el-radio-button(:label="2") Conditional
+        template(v-if="chosen_type === 0 || chosen_type === 2")
+          .col-xs-2 Ongoing damage
+          .col-xs-1
+            drag-adjust(
+              v-model="ongoingDamage",
+              :min="0",
+              :max="25")
+              el-input(v-model="ongoingDamage")
+          .col-xs-2 Regeneration
+          .col-xs-1
+            drag-adjust(
+              v-model="regeneration",
+              :min="0",
+              :max="25")
+              el-input(v-model="regeneration")
+        .col-xs-3(v-if="chosen_type === 0")
+          el-button Add Fail Effect
+          el-button Add Aftereffect
+
     p
-      input.input.input_full(v-model='effect_text', placeholder='Effect text')
+      el-input(v-model='effect_text', placeholder='Effect text')
 
     p Modify defenses
-    el-slider(
+    drag-adjust(
       v-model="defenseModifier",
       :min="-10",
-      :max="10",
-      show-input)
-    el-checkbox(v-model="affectDefence.ac", @change="handleCheckDefense", border) AC
-    el-checkbox(v-model="affectDefence.fort", @change="handleCheckDefense", border) Fort
-    el-checkbox(v-model="affectDefence.ref", @change="handleCheckDefense", border) Ref
-    el-checkbox(v-model="affectDefence.will", @change="handleCheckDefense", border) Will
+      :max="10")
+      el-input(v-model="defenseModifier")
+    el-checkbox(
+      v-model="affectDefence.ac",
+      @change="handleCheckDefense",
+      border) AC
+    el-checkbox(
+      v-model="affectDefence.fort",
+      @change="handleCheckDefense",
+      border) Fort
+    el-checkbox(
+      v-model="affectDefence.ref",
+      @change="handleCheckDefense",
+      border) Ref
+    el-checkbox(
+      v-model="affectDefence.will",
+      @change="handleCheckDefense",
+      border) Will
     el-checkbox(
       :indeterminate="isDefensesIndeterminate",
       v-model="allDefensesChecked",
       @change="handleChangeAllDefenses") {{ allDefensesChecked ? 'Uncheck all' : 'Check all'}}
 
-    p Ongoing damage
-    el-slider(
-      v-model="ongoingDamage",
-      :min="0",
-      :max="25",
-      show-input)
-
-    p Regeneration
-    el-slider(
-      v-model="regeneration",
-      :min="0",
-      :max="25",
-      show-input)
-    p Here process aftereffect and fail
-    //- p(v-if='chosen_type === 1')
-    //-   | Until {{end_turn}} turn
-    //- p(v-if='chosen_type === 2')
-    //-   input.input.input_full(v-model='special', placeholder='Special condition')
     el-button Cancel
     el-button(type="success") Submit effect
 </template>
@@ -51,11 +66,12 @@
 // import Die from "@/components/Die";
 import Vue from "vue";
 import EFFECT_TYPES from "@/enums/effectEndTypes";
+import DragAdjust from "@/components/ui/DragAdjust";
 
 export default {
   name: "EffectConstructor",
   components: {
-    // Die
+    DragAdjust
   },
   data() {
     return {
@@ -88,7 +104,7 @@ export default {
       },
       allDefensesChecked: true,
       isDefensesIndeterminate: false,
-      defenseModifier: 0,
+      defenseModifier: 0
     };
   },
   methods: {
@@ -110,4 +126,8 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.effect-constructor {
+  padding: 16px 32px;
+}
+</style>

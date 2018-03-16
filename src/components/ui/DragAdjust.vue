@@ -16,8 +16,10 @@
       .draginput__number {{temporaryValue}}
       .draginput__circle.draginput__center(:style="circleStyle(3)")
       .draginput__circle.draginput__fader(:style="circleStyle(faderRadius)")
+        .draginput__pulse
       .draginput__circle.draginput__limiter(:style="circleStyle(limiterRadius)")
-    input.draginput__input(v-model="value")
+    slot
+      | Please, paste input here
 </template>
 
 <script>
@@ -42,10 +44,6 @@ export default {
     max: {
       default: 100,
       type: Number
-    },
-    update: {
-      type: Function,
-      default: () => {}
     }
   },
   data() {
@@ -78,10 +76,10 @@ export default {
       );
     },
     faderRadius() {
-      const faderRadius = this.getRadiusByCoords(this.fader.x, this.fader.y);
-      return faderRadius > this.limiterRadius
-        ? this.limiterRadius
-        : faderRadius;
+      return Math.min(
+        this.getRadiusByCoords(this.fader.x, this.fader.y),
+        this.limiterRadius
+      );
     }
   },
   methods: {
@@ -164,9 +162,7 @@ export default {
       return { x, y };
     },
     getRadiusByCoords(x, y) {
-      return Math.sqrt(
-        Math.abs(x - this.center.x) ** 2 + Math.abs(y - this.center.y) ** 2
-      );
+      return Math.sqrt((x - this.center.x) ** 2 + (y - this.center.y) ** 2);
     },
     circleStyle(radius) {
       return `
@@ -180,9 +176,10 @@ export default {
 </script>
 
 <style lang="scss">
+$primary-blue: #409eff;
 .draginput {
   &__overlay {
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
     position: fixed;
     top: 0;
@@ -197,7 +194,7 @@ export default {
   }
   &__number {
     font-size: 80px;
-    color: white;
+    color: $primary-blue;
     user-select: none;
   }
   &__input {
@@ -210,13 +207,30 @@ export default {
     z-index: 1001;
   }
   &__center {
-    background: white;
+    background: $primary-blue;
   }
   &__fader {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba($primary-blue, 0.1);
+  }
+  &__pulse {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba($primary-blue, 0.1);
+    animation: pulse 2.5s infinite;
   }
   &__limiter {
-    border: 1px solid white;
+    border: 1px solid $primary-blue;
+    // box-shadow: 0 0 300px rgba($primary-blue, 0.2);
+  }
+
+  @keyframes pulse {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
   }
 }
 </style>

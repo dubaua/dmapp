@@ -29,7 +29,7 @@ import {
   // FormItem,
   // Header,
   // Icon,
-  // Input,
+  Input,
   // Loading,
   // Main,
   // Menu,
@@ -50,8 +50,8 @@ import {
   // Step,
   // Steps,
   // Submenu,
-  // Table,
-  // TableColumn,
+  Table,
+  TableColumn,
   // TabPane,
   // Tabs,
   // Tag,
@@ -63,19 +63,21 @@ import {
   // Upload,
   Button,
   Checkbox,
-  CheckboxGroup,
+  // CheckboxGroup,
   InputNumber,
   RadioButton,
   RadioGroup,
   Slider,
-  Switch,
+  Switch
 } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "normalize.css";
+import "flexboxgrid2/flexboxgrid2.css";
 import "@/styles/main.scss";
 import App from "./App";
 import router from "./router";
 
+Vue.prototype.$ELEMENT = { size: "small" };
 Vue.config.productionTip = false;
 
 // Vue.use(Alert);
@@ -105,7 +107,7 @@ Vue.use(CheckboxButton);
 // Vue.use(FormItem);
 // Vue.use(Header);
 // Vue.use(Icon);
-// Vue.use(Input);
+Vue.use(Input);
 // Vue.use(Main);
 // Vue.use(Menu);
 // Vue.use(MenuItem);
@@ -122,8 +124,8 @@ Vue.use(CheckboxButton);
 // Vue.use(Step);
 // Vue.use(Steps);
 // Vue.use(Submenu);
-// Vue.use(Table);
-// Vue.use(TableColumn);
+Vue.use(Table);
+Vue.use(TableColumn);
 // Vue.use(TabPane);
 // Vue.use(Tabs);
 // Vue.use(Tag);
@@ -134,7 +136,7 @@ Vue.use(CheckboxButton);
 // Vue.use(Upload);
 Vue.use(Button);
 Vue.use(Checkbox);
-Vue.use(CheckboxGroup);
+// Vue.use(CheckboxGroup);
 Vue.use(InputNumber);
 Vue.use(Switch);
 Vue.use(RadioButton);

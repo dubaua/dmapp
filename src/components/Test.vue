@@ -1,11 +1,15 @@
 <template lang="pug">
   div
-    .test.test--1: drag-adjust(v-model="test1", :min="0", :max="20")
-    .test.test--2: drag-adjust(v-model="test2", :min="100", :max="200")
+    .test.test--1
+      drag-adjust(v-model="test1", :min="0", :max="20")
+        el-input(v-model="test1")
+    .test.test--2
+      drag-adjust(v-model="test2", :min="100", :max="200")
+        el-input(v-model="test2", size="small")
 </template>
 
 <script>
-import DragAdjust from "@/components/DragAdjust";
+import DragAdjust from "@/components/ui/DragAdjust";
 
 export default {
   name: "Test",
