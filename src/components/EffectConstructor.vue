@@ -26,9 +26,20 @@
         .col-xs-3(v-if="chosen_type === 0")
           el-button Add Fail Effect
           el-button Add Aftereffect
-
+        .col-xs-6(v-if="chosen_type === 1")
+          | Until the
+          el-radio-group(v-model="untilTheEndOfTurn")
+            el-radio-button(:label="true") end
+            el-radio-button(:label="false") start
+          | of
+          el-radio-group(v-model="untilTheTargetsTurn")
+            el-radio-button(:label="true") target's
+            el-radio-button(:label="false") caster's
+          | turn
+        .col-xs-3(v-if="chosen_type === 2")
+          el-input(v-model="endCondition", placeholder="Describe the end condition")
     p
-      el-input(v-model='effect_text', placeholder='Effect text')
+      el-input(v-model="effect_text", placeholder="Effect text")
 
     p Modify defenses
     drag-adjust(
@@ -84,6 +95,8 @@ export default {
 
       // if temporary we can adjust end turn
       endTurn: 0,
+      untilTheEndOfTurn: true,
+      untilTheTargetsTurn: true,
 
       // if conditional we should set end condition
       endCondition: "",

@@ -1,37 +1,92 @@
 <template lang="pug">
   div
-    table
-      tr
-        td card
-        td name
-        td initiative
-        td ac
-        td fort
-        td ref
-        td will
-        td thp
-        td hp
-        td target
-        td hit
-        td effects
-      combatant(
-        v-for="combatant in sortedCombatants",
-        :key="combatant.id",
-        :combatant="combatant",
-        @my-event="showCard")
+    el-table(
+      :data="sortedCombatants",
+      style="width: 100%",
+      stripe,
+      header-cell-class-name="tracker-cell",
+      cell-class-name="tracker-cell")
+      el-table-column(
+        prop="name",
+        label="Combatant",
+        width="180",
+        align="right")
+        template(slot-scope="scope")
+          el-button(
+            @click="showCard(scope.row.card.path)",
+            plain,
+            type="primary") {{scope.row.name}}
+      el-table-column(
+        prop="initiative",
+        label="Init",
+        width="68",
+        align="center")
+        template(slot-scope="scope")
+          drag-adjust(
+            v-model="scope.row.initiative",
+            :min="0",
+            :max="50")
+            el-input(v-model="scope.row.initiative")
+      el-table-column(
+        prop="ac",
+        label="AC",
+        width="42",
+        align="center")
+      el-table-column(
+        prop="fort",
+        label="FORT",
+        width="42",
+        align="center")
+      el-table-column(
+        prop="ref",
+        label="REF",
+        width="42",
+        align="center")
+      el-table-column(
+        prop="will",
+        label="WILL",
+        width="42",
+        align="center")
+      el-table-column(
+        prop="thp",
+        label="THP",
+        width="42",
+        align="center")
+      el-table-column(
+        prop="hp",
+        label="HP",
+        width="42",
+        align="center")
+      el-table-column(
+        prop="target",
+        label="Target",
+        width="50",
+        align="center")
+        template(slot-scope="scope")
+          el-switch(v-model="scope.row.target")
+      el-table-column(
+        prop="hit",
+        label="Hit",
+        width="50",
+        align="center")
+        template(slot-scope="scope")
+          el-switch(v-model="scope.row.hit")
+      el-table-column(
+        prop="effects",
+        label="Effects")
     effect-constructor
 </template>
 
 <script>
-import Combatant from "@/components/Combatant";
 import EffectConstructor from "@/components/EffectConstructor";
+import DragAdjust from "@/components/ui/DragAdjust";
 
 // some commetn
 export default {
   name: "Tracker",
   components: {
-    Combatant,
-    EffectConstructor
+    EffectConstructor,
+    DragAdjust
   },
   data() {
     return {
@@ -112,20 +167,16 @@ export default {
       // eslint-disable-next-line
       console.log(url);
     }
-  },
+  }
 };
 </script>
 
 <style lang="scss">
 @import "../styles/main.scss";
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-
-  & td {
-    border-bottom: 1px solid $dust; // TODO grab from global colors
-    padding: 5px 10px;
+.tracker-cell {
+  & .cell {
+    padding: 0 5px;
   }
 }
 </style>
