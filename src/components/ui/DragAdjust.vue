@@ -4,8 +4,6 @@
     @touchstart="supposeAdjastment",
     @mouseup="clear",
     @mouseleave="clear",
-    @touchend="clear",
-    @touchcancel="clear",
   )
     .draginput__overlay(
       v-if="isAdjusting",
@@ -117,6 +115,7 @@ export default {
     submit(e) {
       this.$emit("input", this.temporaryValue);
       this.clear(e);
+      e.stopPropagation();
     },
     clear(e) {
       this.removeTouchListeners();
