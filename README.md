@@ -31,6 +31,7 @@ npm run build --report
 - [ ] Сделать стеш бойцов, там сидят те, кто не на поле, но готов выйти, или трупики. Либо трупы в отдельной пачке.
 - [ ] На каждую битву должны быть установлены следующие настройки: игроки, монстры, пресеты эффектов, стеш
 - [ ] Сделать быстрый словарь кондиций (он есть в енумчике)
+- [ ] перетащить на нюкст
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 "# dmapp"
