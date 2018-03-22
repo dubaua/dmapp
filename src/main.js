@@ -63,7 +63,7 @@ import {
   // Upload,
   Button,
   Checkbox,
-  // CheckboxGroup,
+  CheckboxGroup,
   InputNumber,
   RadioButton,
   RadioGroup,
@@ -136,7 +136,7 @@ Vue.use(TableColumn);
 // Vue.use(Upload);
 Vue.use(Button);
 Vue.use(Checkbox);
-// Vue.use(CheckboxGroup);
+Vue.use(CheckboxGroup);
 Vue.use(InputNumber);
 Vue.use(Switch);
 Vue.use(RadioButton);

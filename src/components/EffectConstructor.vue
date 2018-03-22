@@ -39,7 +39,17 @@
         .col-xs-3(v-if="chosen_type === 2")
           el-input(v-model="endCondition", placeholder="Describe the end condition")
     p
-      el-input(v-model="effect_text", placeholder="Effect text")
+      el-input(v-model="effectText", placeholder="Effect text")
+
+    el-checkbox-group(
+      v-model="followingConditionsIds",
+      class="el-checkbox-group--flex",
+      )
+      el-checkbox-button(
+        v-for="condition in conditions",
+        :label="condition.id",
+        class="el-checkbox-button--grow",
+        :key="condition.id") {{condition.title}}
 
     p Modify defenses
     drag-adjust(
@@ -77,6 +87,7 @@
 // import Die from "@/components/Die";
 import Vue from "vue";
 import EFFECT_TYPES from "@/enums/effectEndTypes";
+import CONDITIONS from "@/enums/conditions";
 import DragAdjust from "@/components/ui/DragAdjust";
 
 export default {
@@ -102,9 +113,10 @@ export default {
       endCondition: "",
 
       // here we set conditions than effect cause
-      conditions: null,
+      conditions: CONDITIONS,
+      followingConditionsIds: [],
       // and custom text
-      effect_text: "",
+      effectText: "",
 
       ongoingDamage: 0,
       regeneration: 0,
@@ -120,6 +132,9 @@ export default {
       defenseModifier: 0
     };
   },
+  watch: {
+    followingConditionsIds: "processFollowingConditions"
+  },
   methods: {
     handleChangeAllDefenses(newValue) {
       Object.keys(this.affectDefence).map(key =>
@@ -134,13 +149,45 @@ export default {
       this.allDefensesChecked = checkedCount === defenseKeys.length;
       this.isDefensesIndeterminate =
         checkedCount > 0 && checkedCount < defenseKeys.length;
+    },
+    processFollowingConditions(conditionIds) {
+      console.log(conditionIds);
+      conditionIds.forEach((conditionId) => {
+        // eslint-disable-next-line consistent-return
+        CONDITIONS[conditionId].chained.forEach((chainedConditionId) => {
+          if (this.followingConditionsIds.indexOf(chainedConditionId) === -1) {
+            // TODO if already petrified, it can to not fall prone
+            if (chainedConditionId === 12 && this.followingConditionsIds.indexOf(11) !== -1) {
+              return false;
+            }
+            this.followingConditionsIds.push(chainedConditionId);
+          }
+        });
+      });
     }
-  }
+  },
 };
 </script>
 
 <style lang="scss">
 .effect-constructor {
   padding: 16px 32px;
+}
+// TODO move to separate file. or create theme.
+.el-checkbox-group--flex {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 1px;
+}
+
+.el-checkbox-button--grow {
+  display: block;
+  flex-grow: 1;
+  max-width: 140px;
+  margin-top: -1px;
+  & .el-checkbox-button__inner {
+    border-left: 1px;
+    display: block;
+  }
 }
 </style>
