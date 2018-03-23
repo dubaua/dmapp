@@ -7,6 +7,7 @@
       header-cell-class-name="tracker-cell",
       cell-class-name="tracker-cell")
       el-table-column(
+        fixed="left",
         prop="name",
         label="Combatant",
         width="180",
@@ -74,7 +75,8 @@
       el-table-column(
         prop="effects",
         label="Effects")
-    effect-constructor
+    el-button Process attack
+
 </template>
 
 <script>
@@ -142,7 +144,19 @@ export default {
             path: "url"
           }
         }
-      ]
+      ],
+      hitResults: {
+        damage: 0,
+        heal: 0,
+        temporaryHP: 0,
+        effects: {},
+      },
+      missResults: {
+        damage: 0,
+        heal: 0,
+        temporaryHP: 0,
+        effects: {},
+      },
     };
   },
   computed: {
