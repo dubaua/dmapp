@@ -67,12 +67,11 @@ import {
   InputNumber,
   RadioButton,
   RadioGroup,
-  Slider,
+  // Slider,
   Switch
 } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import "normalize.css";
-import "flexboxgrid2/flexboxgrid2.css";
 import "@/styles/main.scss";
 import App from "./App";
 import router from "./router";
@@ -141,7 +140,7 @@ Vue.use(InputNumber);
 Vue.use(Switch);
 Vue.use(RadioButton);
 Vue.use(RadioGroup);
-Vue.use(Slider);
+// Vue.use(Slider);
 
 /* eslint-disable no-new */
 new Vue({
