@@ -177,6 +177,9 @@ export default {
 <style lang="scss">
 $primary-blue: #409eff;
 .draginput {
+  display: inline-block;
+  max-width: 48px;
+
   &__overlay {
     background: rgba(0, 0, 0, 0.8);
     z-index: 1000;
