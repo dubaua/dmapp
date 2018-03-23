@@ -35,7 +35,7 @@ exports.cssLoaders = function (options) {
 
     if (loader) {
       loaders.push({
-        loader: loader + '-loader',
+        loader: loader === 'sass' ? 'fast-sass-loader' : loader + '-loader',
         options: Object.assign({}, loaderOptions, {
           sourceMap: options.sourceMap
         })
