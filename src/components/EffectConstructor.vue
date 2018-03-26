@@ -2,7 +2,7 @@
   //- ec stands for effect constructor
   .ec
     h1 Effect constructor
-    .ec__row
+    .ec__row.ec__row--major
       .ec__row
         .ec__label Describe how effect ends
         el-radio-group(v-model="chosenType")
@@ -44,37 +44,40 @@
           v-model="endCondition",
           placeholder="Describe the end condition",
           class="ec__text-input")
-    el-input(v-model="effectText", placeholder="Effect text")
-
-    el-checkbox-group(
-      v-model="followingConditionsIds",
-      class="el-checkbox-group--flex",
-      )
+    .ec__row.ec__row--major
+      el-input(v-model="effectText", placeholder="Effect text")
+    .ec__row.ec__row--major
+      el-checkbox-group(
+        v-model="followingConditionsIds",
+        class="el-checkbox-group--flex",
+        )
+        el-checkbox(
+          v-for="condition in conditions",
+          :label="condition.id",
+          border,
+          :key="condition.id") {{condition.title}}
+    .ec__row.ec__row--major
+      drag-adjust(
+        v-model="defenseModifier",
+        :min="-10",
+        :max="10",
+        :disabled="isDefenseModifierDisabled")
+        el-input(v-model="defenseModifier", :disabled="isDefenseModifierDisabled")
       el-checkbox(
-        v-for="condition in conditions",
-        :label="condition.id",
+        v-for="(value, key, index) in affectedDefenses",
+        v-model="affectedDefenses[key]",
+        @change="handleCheckDefense",
         border,
-        :key="condition.id") {{condition.title}}
-
-    p Modify defenses
-    drag-adjust(
-      v-model="defenseModifier",
-      :min="-10",
-      :max="10")
-      el-input(v-model="defenseModifier", :disabled="isDefenseModifierDisabled")
-    el-checkbox(
-      v-for="(value, key, index) in affectedDefenses",
-      v-model="affectedDefenses[key]",
-      @change="handleCheckDefense",
-      border,
-      :key="index") {{ key.toUpperCase() }}
-    el-checkbox(
-      :indeterminate="isDefensesIndeterminate",
-      v-model="allDefensesChecked",
-      @change="handleChangeAllDefenses") {{ allDefensesChecked ? 'Uncheck all' : 'Check all'}}
-
-    el-button(type="text") Cancel
-    el-button(type="success", @click="submitEffect") Submit effect
+        class="el-checkbox--compact",
+        :key="index") {{ key.toUpperCase() }}
+      el-checkbox(
+        :indeterminate="isDefensesIndeterminate",
+        v-model="allDefensesChecked",
+        @change="handleChangeAllDefenses"
+        class="el-checkbox--compact") {{ allDefensesChecked ? 'Uncheck all' : 'Check all'}}
+    .ec__row.ec__row--major
+      el-button(type="text") Cancel
+      el-button(type="success", @click="submitEffect") Submit effect
 </template>
 
 <script>
@@ -195,11 +198,18 @@ $spacing: 8px;
     & > * {
       margin-right: $spacing;
     }
+
+    & > :only-child {
+      margin-right: 0;
+    }
+
+    &--major {
+      margin: $spacing 0;
+    }
   }
 
   &__label {
     font-size: 12px;
-    font-weight: 500;
     color: $--color-text-regular;
     line-height: 14px;
   }
@@ -213,17 +223,23 @@ $spacing: 8px;
 .el-checkbox-group--flex {
   display: flex;
   flex-wrap: wrap;
-  margin-left: -$spacing / 2;
-  margin-right: -$spacing / 2;
+  margin: -$spacing / 2 !important;
 
   & .el-checkbox {
     flex-grow: 1;
-    margin: 0 $spacing / 2 $spacing;
+    margin: $spacing / 2;
     max-width: 170px;
   }
 
   & .el-checkbox.is-bordered + .el-checkbox.is-bordered {
     margin-left: $spacing / 2;
   }
+
+
 }
+
+.el-checkbox--compact {
+  margin-left: 0 !important;
+}
+
 </style>
