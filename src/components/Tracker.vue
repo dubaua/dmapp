@@ -74,9 +74,60 @@
           el-switch(v-model="scope.row.hit")
       el-table-column(
         prop="effects",
-        label="Effects")
-    el-button Process attack
+        label="Effects",
+        align="left")
+    .process-attack
+      table
+        tr
+          th
+          th Damage
+          th Heal
+          th Temp HP
+          th Effects
+        tr
+          td Hit
+          td
+            drag-adjust(
+              v-model="hitResults.damage",
+              :min="0",
+              :max="100")
+              el-input(v-model="hitResults.damage")
+          td
+            drag-adjust(
+              v-model="hitResults.heal",
+              :min="0",
+              :max="100")
+              el-input(v-model="hitResults.heal")
+          td
+            drag-adjust(
+              v-model="hitResults.temporaryHP",
+              :min="0",
+              :max="100")
+              el-input(v-model="hitResults.temporaryHP")
+          td Effects
+        tr
+          td Miss
+          td
+            drag-adjust(
+              v-model="missResults.damage",
+              :min="0",
+              :max="100")
+              el-input(v-model="missResults.damage")
+          td
+            drag-adjust(
+              v-model="missResults.heal",
+              :min="0",
+              :max="100")
+              el-input(v-model="missResults.heal")
+          td
+            drag-adjust(
+              v-model="missResults.temporaryHP",
+              :min="0",
+              :max="100")
+              el-input(v-model="missResults.temporaryHP")
+          td Effects
 
+    effect-constructor
 </template>
 
 <script>
@@ -191,6 +242,23 @@ export default {
 .tracker-cell {
   & .cell {
     padding: 0 5px;
+    display: flex;
+    align-items: center;
+  }
+  &.is-center {
+    & .cell {
+      justify-content: center;
+    }
+  }
+  &.is-right {
+    & .cell {
+      justify-content: flex-end;
+    }
+  }
+  &.is-left {
+    & .cell {
+      justify-content: flex-start;
+    }
   }
 }
 </style>
