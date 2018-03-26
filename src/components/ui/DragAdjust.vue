@@ -23,7 +23,6 @@
 <script>
 /* eslint-disable no-mixed-operators, no-console */
 
-// time to hold touch or mouse to show overlay
 const ADJUST_DELAY = 150;
 const LIMITER_MARGIN = 32;
 
@@ -42,7 +41,11 @@ export default {
     max: {
       default: 100,
       type: Number
-    }
+    },
+    disabled: {
+      default: false,
+      type: Boolean
+    },
   },
   data() {
     return {
@@ -81,7 +84,9 @@ export default {
     }
   },
   methods: {
+    // eslint-disable-next-line consistent-return
     supposeAdjastment(e) {
+      if (this.disabled) return false;
       const { x, y } = this.getEventCoords(e);
       this.setCenter(x, y);
       this.setFader(x, y);
@@ -223,7 +228,6 @@ $primary-blue: #409eff;
   }
   &__limiter {
     border: 1px solid $primary-blue;
-    // box-shadow: 0 0 300px rgba($primary-blue, 0.2);
   }
 
   @keyframes pulse {
