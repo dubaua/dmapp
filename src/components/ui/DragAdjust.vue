@@ -14,7 +14,6 @@
       .draginput__number {{temporaryValue}}
       .draginput__circle.draginput__center(:style="circleStyle(3)")
       .draginput__circle.draginput__fader(:style="circleStyle(faderRadius)")
-        .draginput__pulse
       .draginput__circle.draginput__limiter(:style="circleStyle(limiterRadius)")
     slot
       | Please, paste input here
@@ -217,26 +216,10 @@ $primary-blue: #409eff;
     background: $primary-blue;
   }
   &__fader {
-    background: rgba($primary-blue, 0.1);
-  }
-  &__pulse {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: rgba($primary-blue, 0.1);
-    animation: pulse 2.5s infinite;
+    background: rgba($primary-blue, 0.33);
   }
   &__limiter {
-    border: 1px solid $primary-blue;
-  }
-
-  @keyframes pulse {
-    from {
-      transform: scale(0);
-    }
-    to {
-      transform: scale(1);
-    }
+    border: 3px solid $primary-blue;
   }
 }
 </style>
