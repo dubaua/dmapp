@@ -75,6 +75,7 @@ import "normalize.css";
 import "@/styles/main.scss";
 import App from "./App";
 import router from "./router";
+import store from "./store";
 
 Vue.prototype.$ELEMENT = { size: "small" };
 Vue.config.productionTip = false;
@@ -146,6 +147,7 @@ Vue.use(RadioGroup);
 new Vue({
   el: "#app",
   router,
+  store,
   components: { App },
   template: "<App/>"
 });

@@ -27,8 +27,8 @@
           :max="25")
           el-input(v-model="effect.regeneration")
       .ec__row(v-if="effect.chosenType === types.SAVE_ENDS")
-        el-button(type="text", icon="el-icon-plus",) Add Fail Effect
-        el-button(type="text", icon="el-icon-plus",) Add Aftereffect
+        el-button(type="text", icon="el-icon-plus") Add Fail Effect
+        el-button(type="text", icon="el-icon-plus") Add Aftereffect
       .ec__row(v-if="effect.chosenType === types.TEMPORARY")
         .ec__label Lasts until
         el-radio-group(v-model="effect.untilTheEndOfTurn")

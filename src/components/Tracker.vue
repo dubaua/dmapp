@@ -104,7 +104,8 @@
               :min="0",
               :max="100")
               el-input(v-model="hitResults.temporaryHP")
-          td Effects
+          td
+            el-button(type="text", icon="el-icon-plus") Add Effect on Hit
         tr
           td Miss
           td
@@ -125,14 +126,15 @@
               :min="0",
               :max="100")
               el-input(v-model="missResults.temporaryHP")
-          td Effects
+          td
+            el-button(type="text", icon="el-icon-plus") Add Effect on Miss
 
-    effect-constructor
 </template>
 
 <script>
 import EffectConstructor from "@/components/EffectConstructor";
 import DragAdjust from "@/components/ui/DragAdjust";
+import { mapGetters } from "vuex";
 
 // some commetn
 export default {
@@ -143,89 +145,22 @@ export default {
   },
   data() {
     return {
-      combatants: [
-        {
-          id: 1,
-          name: "Mob 1",
-          initiative: 17,
-          ac: 20,
-          fort: 20,
-          ref: 20,
-          will: 20,
-          thp: 0,
-          hp: 50,
-          target: false,
-          hit: false,
-          effects: [],
-          card: {
-            path: "url"
-          }
-        },
-        {
-          id: 2,
-          name: "Mob 2",
-          initiative: 8,
-          ac: 20,
-          fort: 20,
-          ref: 20,
-          will: 20,
-          thp: 0,
-          hp: 50,
-          target: false,
-          hit: false,
-          effects: [],
-          card: {
-            path: "url"
-          }
-        },
-        {
-          id: 3,
-          name: "Mob 3",
-          initiative: 16,
-          ac: 15,
-          fort: 15,
-          ref: 15,
-          will: 15,
-          thp: 0,
-          hp: 25,
-          target: false,
-          hit: false,
-          effects: [],
-          card: {
-            path: "url"
-          }
-        }
-      ],
       hitResults: {
         damage: 0,
         heal: 0,
         temporaryHP: 0,
-        effects: {},
+        effects: {}
       },
       missResults: {
         damage: 0,
         heal: 0,
         temporaryHP: 0,
-        effects: {},
-      },
+        effects: {}
+      }
     };
   },
   computed: {
-    sortedCombatants() {
-      // slice to avoid mutation
-      return this.combatants
-        .slice(0)
-        .sort((a, b) => b.initiative - a.initiative);
-    },
-    hit() {
-      return this.targets.filter(combatant => combatant.hit);
-    },
-    miss() {
-      return this.targets.filter(combatant => !combatant.hit);
-    },
-    targets() {
-      return this.combatants.filter(combatant => combatant.target);
-    }
+    ...mapGetters("tracker", ["sortedCombatants"])
   },
   methods: {
     showCard(url) {
