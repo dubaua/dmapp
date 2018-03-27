@@ -45,7 +45,7 @@
           placeholder="Describe the end condition",
           class="ec__text-input")
     .ec__row.ec__row--major
-      el-input(v-model="effect.effectText", placeholder="Effect text")
+      el-input(v-model="effect.effectDescription", placeholder="Effect description")
     .ec__row.ec__row--major
       el-checkbox-group(
         v-model="effect.conditions",
@@ -107,7 +107,7 @@ export default {
         untilTheEndOfTurn: true,
         untilTheTargetsTurn: true,
         endCondition: "",
-        effectText: "",
+        effectDescription: "",
         ongoingDamage: 0,
         regeneration: 0,
         conditions: [],
@@ -236,6 +236,10 @@ $spacing: 8px;
 
   & .el-checkbox.is-bordered + .el-checkbox.is-bordered {
     margin-left: $spacing / 2;
+  }
+
+  & .el-button {
+    margin: $spacing / 2;
   }
 }
 
