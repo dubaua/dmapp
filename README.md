@@ -21,6 +21,7 @@ npm run build --report
 ## TODO
 
 * [ ] перетащить на нюкст
+* [ ] вкорячить вьюх
 
 ### DragInput
 
@@ -43,10 +44,11 @@ npm run build --report
 ### Effect constructor
 
 * [x] Адаптировать компонент для сохранения и загрузки эффектов
-* [ ] Грубая рабочая версия конструктора.
+* [x] добавить возможность сбрасывать эффекты
+* [x] Сделать быстрый словарь кондиций (он есть в енумчике)
+* [x] Подготовить рабочую схему эффекта
 * [ ] Сделать вызывающий сам себя конструктор эффектов
 * [ ] В обработчике попадания можно заполнять эффекты из пресетов.
-* [x] Сделать быстрый словарь кондиций (он есть в енумчике)
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 "# dmapp"
