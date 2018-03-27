@@ -27,8 +27,8 @@
           :max="25")
           el-input(v-model="effect.regeneration")
       .ec__row(v-if="effect.chosenType === types.SAVE_ENDS")
-        el-button(type="text") Add Fail Effect
-        el-button(type="text") Add Aftereffect
+        el-button(type="text", icon="el-icon-plus",) Add Fail Effect
+        el-button(type="text", icon="el-icon-plus",) Add Aftereffect
       .ec__row(v-if="effect.chosenType === types.TEMPORARY")
         .ec__label Lasts until
         el-radio-group(v-model="effect.untilTheEndOfTurn")
@@ -48,7 +48,7 @@
       el-input(v-model="effect.effectText", placeholder="Effect text")
     .ec__row.ec__row--major
       el-checkbox-group(
-        v-model="effect.chainedConditionsIds",
+        v-model="effect.conditions",
         class="el-checkbox-group--flex",
         )
         el-checkbox(
@@ -56,6 +56,10 @@
           :label="condition.id",
           border,
           :key="condition.id") {{condition.title}}
+        el-button(
+          type="text",
+          icon="el-icon-close",
+          @click="resetConditions") Reset conditions
     .ec__row.ec__row--major
       drag-adjust(
         v-model="effect.defenseModifier",
@@ -106,7 +110,7 @@ export default {
         effectText: "",
         ongoingDamage: 0,
         regeneration: 0,
-        chainedConditionsIds: [],
+        conditions: [],
         affectedDefenses: {
           ac: true,
           fort: true,
@@ -122,11 +126,13 @@ export default {
   },
   computed: {
     isDefenseModifierDisabled() {
-      return !this.effect.isDefensesIndeterminate && !this.effect.allDefensesChecked;
+      return (
+        !this.effect.isDefensesIndeterminate && !this.effect.allDefensesChecked
+      );
     }
   },
   watch: {
-    "effect.chainedConditionsIds": "processChainedConditions"
+    "effect.conditions": "processChainedConditions"
   },
   methods: {
     handleChangeAllDefenses(newValue) {
@@ -146,24 +152,31 @@ export default {
     },
     processChainedConditions(conditionIds) {
       conditionIds.forEach((conditionId) => {
-        // eslint-disable-next-line consistent-return
-        CONDITIONS.properties[conditionId].chained.forEach((chainedConditionId) => {
-          // do not add existed condition
-          if (
-            this.effect.chainedConditionsIds.indexOf(chainedConditionId) ===
-            -1
-          ) {
-            // if already petrified do not add prone condution
+        CONDITIONS.properties[conditionId].chained.forEach(
+          // eslint-disable-next-line consistent-return
+          (chainedConditionId) => {
+            // do not add existed condition
             if (
-              this.effect.chainedConditionsIds.indexOf(CONDITIONS.PETRIFIED) !== -1 &&
-              chainedConditionId === CONDITIONS.PRONE
+              this.effect.conditions.indexOf(chainedConditionId) ===
+              -1
             ) {
-              return false;
+              // if already petrified do not add prone condution
+              if (
+                this.effect.conditions.indexOf(
+                  CONDITIONS.PETRIFIED
+                ) !== -1 &&
+                chainedConditionId === CONDITIONS.PRONE
+              ) {
+                return false;
+              }
+              this.effect.conditions.push(chainedConditionId);
             }
-            this.effect.chainedConditionsIds.push(chainedConditionId);
           }
-        });
+        );
       });
+    },
+    resetConditions() {
+      this.effect.conditions.splice(0, this.effect.conditions.length);
     },
     submitEffect() {
       console.log(this.effect);
