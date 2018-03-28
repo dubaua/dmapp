@@ -16,7 +16,7 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url"
+        path: "url Mob 1"
       }
     },
     2: {
@@ -33,7 +33,7 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url"
+        path: "url Mob 2"
       }
     },
     3: {
@@ -50,10 +50,11 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url"
+        path: "url Mob 3"
       }
     }
   },
+  cardUrl: "",
   turn: 0
 };
 
@@ -83,6 +84,9 @@ const mutations = {
   setHit(state, { id, value }) {
     state.combatants[id].target = value;
     state.combatants[id].hit = value;
+  },
+  setCardUrl(state, { url }) {
+    state.cardUrl = url;
   },
 };
 

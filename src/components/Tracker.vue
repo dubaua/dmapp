@@ -14,7 +14,7 @@
         align="right")
         template(slot-scope="scope")
           el-button(
-            @click="showCard(scope.row.card.path)",
+            @click="setCardUrl({ url: scope.row.card.path })",
             plain,
             type="primary") {{scope.row.name}}
       el-table-column(
@@ -34,7 +34,7 @@
               :value="scope.row.initiative",
               @change=`setInitiative({
                   id: scope.row.id,
-                  value:$event})`)
+                  value: $event})`)
       el-table-column(
         prop="ac",
         label="AC",
@@ -149,7 +149,6 @@ import EffectConstructor from "@/components/EffectConstructor";
 import DragAdjust from "@/components/ui/DragAdjust";
 import { mapGetters, mapMutations } from "vuex";
 
-/* eslint-disable no-console */
 export default {
   name: "Tracker",
   components: {
@@ -176,10 +175,7 @@ export default {
     ...mapGetters("tracker", ["sortedCombatants"])
   },
   methods: {
-    ...mapMutations("tracker", ["setInitiative", "setTarget", "setHit"]),
-    showCard(url) {
-      console.log(url);
-    }
+    ...mapMutations("tracker", ["setInitiative", "setTarget", "setHit", "setCardUrl"]),
   }
 };
 </script>
