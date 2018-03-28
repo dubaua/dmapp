@@ -155,22 +155,16 @@ export default {
         CONDITIONS.properties[conditionId].chained.forEach(
           // eslint-disable-next-line consistent-return
           (chainedConditionId) => {
-            // do not add existed condition
             if (
-              this.effect.conditions.indexOf(chainedConditionId) ===
-              -1
+              // do not add existed condition
+              (this.effect.conditions.indexOf(chainedConditionId) !== -1) ||
+              // do not fall prone in already petrified
+              (this.effect.conditions.indexOf(CONDITIONS.PETRIFIED) !== -1 &&
+              chainedConditionId === CONDITIONS.PRONE)
             ) {
-              // if already petrified do not add prone condution
-              if (
-                this.effect.conditions.indexOf(
-                  CONDITIONS.PETRIFIED
-                ) !== -1 &&
-                chainedConditionId === CONDITIONS.PRONE
-              ) {
-                return false;
-              }
-              this.effect.conditions.push(chainedConditionId);
+              return false;
             }
+            this.effect.conditions.push(chainedConditionId);
           }
         );
       });
