@@ -24,10 +24,20 @@
         align="center")
         template(slot-scope="scope")
           drag-adjust(
-            v-model="scope.row.initiative",
+            :value="scope.row.initiative",
             :min="0",
-            :max="50")
-            el-input(v-model="scope.row.initiative")
+            :max="50",
+            @input=`updateCombatant({
+              target: scope.row.id,
+              key: 'initiative',
+              value: $event})`)
+            el-input(
+              :value="scope.row.initiative",
+              @change=`updateCombatant({
+                  target: scope.row.id,
+                  key: 'initiative',
+                  value: parseInt($event, 10)
+                })`)
       el-table-column(
         prop="ac",
         label="AC",
@@ -64,14 +74,20 @@
         width="50",
         align="center")
         template(slot-scope="scope")
-          el-switch(v-model="scope.row.target")
+          el-switch(
+            :value="scope.row.target",
+            @change="updateCombatant({target: scope.row.id, key: 'target',value: $event})",
+            )
       el-table-column(
         prop="hit",
         label="Hit",
         width="50",
         align="center")
         template(slot-scope="scope")
-          el-switch(v-model="scope.row.hit")
+          el-switch(
+            :value="scope.row.hit",
+            @change="updateCombatant({target: scope.row.id, key: 'hit',value: $event})",
+            )
       el-table-column(
         prop="effects",
         label="Effects",
@@ -134,9 +150,9 @@
 <script>
 import EffectConstructor from "@/components/EffectConstructor";
 import DragAdjust from "@/components/ui/DragAdjust";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
-// some commetn
+/* eslint-disable no-console */
 export default {
   name: "Tracker",
   components: {
@@ -163,10 +179,10 @@ export default {
     ...mapGetters("tracker", ["sortedCombatants"])
   },
   methods: {
+    ...mapMutations("tracker", ["updateCombatant"]),
     showCard(url) {
-      // eslint-disable-next-line
       console.log(url);
-    }
+    },
   }
 };
 </script>

@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow */
+/* eslint-disable no-shadow, no-console */
 
 const state = {
   combatants: {
@@ -62,13 +62,16 @@ const getters = {
   sortedCombatants: (state, getters) =>
     getters.combatants.slice(0).sort((a, b) => b.initiative - a.initiative),
   targets: (state, getters) => getters.combatants.filter(c => c.target),
-  hit: (state, getters) => getters.targets.filter(c => !c.hit),
-  miss: (state, getters) => getters.targets.filter(c => c.target),
+  hit: (state, getters) => getters.targets.filter(c => c.hit),
+  miss: (state, getters) => getters.targets.filter(c => !c.hit)
 };
 
 const mutations = {
   nextTurn(state) {
     state.turn++; // eslint-disable-line no-plusplus
+  },
+  updateCombatant(state, { target, key, value }) {
+    state.combatants[target][key] = value;
   }
 };
 
