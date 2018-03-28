@@ -72,7 +72,18 @@ const mutations = {
   },
   updateCombatant(state, { target, key, value }) {
     state.combatants[target][key] = value;
-  }
+  },
+  setInitiative(state, { id, value }) {
+    state.combatants[id].initiative = parseInt(value, 10);
+  },
+  setTarget(state, { id, value }) {
+    state.combatants[id].target = value;
+    if (!value) state.combatants[id].hit = false;
+  },
+  setHit(state, { id, value }) {
+    state.combatants[id].target = value;
+    state.combatants[id].hit = value;
+  },
 };
 
 export default {

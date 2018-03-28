@@ -27,17 +27,14 @@
             :value="scope.row.initiative",
             :min="0",
             :max="50",
-            @input=`updateCombatant({
-              target: scope.row.id,
-              key: 'initiative',
+            @input=`setInitiative({
+              id: scope.row.id,
               value: $event})`)
             el-input(
               :value="scope.row.initiative",
-              @change=`updateCombatant({
-                  target: scope.row.id,
-                  key: 'initiative',
-                  value: parseInt($event, 10)
-                })`)
+              @change=`setInitiative({
+                  id: scope.row.id,
+                  value:$event})`)
       el-table-column(
         prop="ac",
         label="AC",
@@ -76,7 +73,7 @@
         template(slot-scope="scope")
           el-switch(
             :value="scope.row.target",
-            @change="updateCombatant({target: scope.row.id, key: 'target',value: $event})",
+            @change="setTarget({id: scope.row.id, value: $event})",
             )
       el-table-column(
         prop="hit",
@@ -86,7 +83,7 @@
         template(slot-scope="scope")
           el-switch(
             :value="scope.row.hit",
-            @change="updateCombatant({target: scope.row.id, key: 'hit',value: $event})",
+            @change="setHit({id: scope.row.id, value: $event})",
             )
       el-table-column(
         prop="effects",
@@ -179,10 +176,10 @@ export default {
     ...mapGetters("tracker", ["sortedCombatants"])
   },
   methods: {
-    ...mapMutations("tracker", ["updateCombatant"]),
+    ...mapMutations("tracker", ["setInitiative", "setTarget", "setHit"]),
     showCard(url) {
       console.log(url);
-    },
+    }
   }
 };
 </script>
