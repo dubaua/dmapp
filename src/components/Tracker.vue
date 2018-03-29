@@ -9,7 +9,7 @@
       el-table-column(
         fixed="left",
         prop="name",
-        label="Combatant",
+        label="Show Combatant Card",
         width="180",
         align="right")
         template(slot-scope="scope")
