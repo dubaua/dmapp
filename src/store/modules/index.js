@@ -8,9 +8,11 @@ requireModule.keys().forEach((fileName) => {
   if (fileName === './index.js') return;
 
   const moduleName = camelCase(fileName.replace(/(\.\/|\.js)/g, ''));
+  const module = requireModule(fileName);
+
   modules[moduleName] = {
     namespaced: true,
-    ...requireModule(fileName).default,
+    ...module.__esModule ? module.default : module, // eslint-disable-line
   };
 });
 
