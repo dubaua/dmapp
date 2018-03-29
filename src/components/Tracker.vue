@@ -145,16 +145,10 @@
 </template>
 
 <script>
-import EffectConstructor from '@/components/EffectConstructor';
-import DragAdjust from '@/components/DragAdjust';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'Tracker',
-  components: {
-    EffectConstructor,
-    DragAdjust,
-  },
   data() {
     return {
       impact: {

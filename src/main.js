@@ -73,6 +73,7 @@ import {
 import 'element-ui/lib/theme-chalk/index.css';
 import 'normalize.css';
 import '@/styles/main.scss';
+import '@/components/global';
 import App from './App';
 import router from './router';
 import store from './store';

@@ -9,13 +9,8 @@
 </template>
 
 <script>
-import DragAdjust from '@/components/DragAdjust';
-
 export default {
   name: 'Test',
-  components: {
-    DragAdjust,
-  },
   data() {
     return {
       test1: 7,

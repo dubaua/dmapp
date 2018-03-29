@@ -89,13 +89,9 @@
 import Vue from 'vue';
 import EFFECT_TYPES from '@/enums/effectEndTypes';
 import CONDITIONS from '@/enums/conditions';
-import DragAdjust from '@/components/DragAdjust';
 
 export default {
   name: 'EffectConstructor',
-  components: {
-    DragAdjust,
-  },
   data() {
     return {
       types: EFFECT_TYPES,
@@ -180,7 +176,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../styles/element-variables.scss";
+@import "../../styles/element-variables.scss";
 
 $spacing: 8px;
 
