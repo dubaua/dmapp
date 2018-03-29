@@ -126,7 +126,12 @@ export default {
 
       this.isAdjusting = false;
 
-      if (this.timeoutId) this.inputEl.focus();
+      if (this.timeoutId) {
+        this.inputEl.focus();
+      } else {
+        this.inputEl.blur();
+      }
+
       this.inputEl = null;
 
       this.resetTimer();
