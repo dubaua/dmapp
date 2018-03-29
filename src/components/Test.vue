@@ -9,19 +9,19 @@
 </template>
 
 <script>
-import DragAdjust from "@/components/ui/DragAdjust";
+import DragAdjust from '@/components/ui/DragAdjust';
 
 export default {
-  name: "Test",
+  name: 'Test',
   components: {
-    DragAdjust
+    DragAdjust,
   },
   data() {
     return {
       test1: 7,
       test2: 165,
     };
-  }
+  },
 };
 </script>
 

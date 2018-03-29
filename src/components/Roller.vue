@@ -7,12 +7,12 @@
 </template>
 
 <script>
-import Die from "@/components/Die";
+import Die from '@/components/Die';
 
 export default {
-  name: "Roller",
+  name: 'Roller',
   components: {
-    Die
+    Die,
   },
   data() {
     return {
@@ -22,8 +22,8 @@ export default {
         8,
         10,
         12,
-        20
-      ]
+        20,
+      ],
     };
   },
 };

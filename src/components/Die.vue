@@ -9,17 +9,17 @@
 const LOG_LENGTH = 10;
 
 export default {
-  name: "Die",
+  name: 'Die',
   props: {
     range: {
       default: 20,
-      type: Number
-    }
+      type: Number,
+    },
   },
   data() {
     return {
       result: this.range,
-      log: []
+      log: [],
     };
   },
   methods: {
@@ -40,7 +40,7 @@ export default {
       }
       this.log.unshift(entry);
     },
-  }
+  },
 };
 </script>
 

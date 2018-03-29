@@ -145,15 +145,15 @@
 </template>
 
 <script>
-import EffectConstructor from "@/components/EffectConstructor";
-import DragAdjust from "@/components/ui/DragAdjust";
-import { mapGetters, mapMutations } from "vuex";
+import EffectConstructor from '@/components/EffectConstructor';
+import DragAdjust from '@/components/ui/DragAdjust';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
-  name: "Tracker",
+  name: 'Tracker',
   components: {
     EffectConstructor,
-    DragAdjust
+    DragAdjust,
   },
   data() {
     return {
@@ -161,22 +161,22 @@ export default {
         damage: 0,
         heal: 0,
         temporaryHP: 0,
-        effects: {}
+        effects: {},
       },
       missResults: {
         damage: 0,
         heal: 0,
         temporaryHP: 0,
-        effects: {}
-      }
+        effects: {},
+      },
     };
   },
   computed: {
-    ...mapGetters("tracker", ["sortedCombatants"])
+    ...mapGetters('tracker', ['sortedCombatants']),
   },
   methods: {
-    ...mapMutations("tracker", ["setInitiative", "setTarget", "setHit", "setCardUrl"]),
-  }
+    ...mapMutations('tracker', ['setInitiative', 'setTarget', 'setHit', 'setCardUrl']),
+  },
 };
 </script>
 

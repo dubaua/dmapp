@@ -86,15 +86,15 @@
 
 <script>
 /* eslint-disable no-console */
-import Vue from "vue";
-import EFFECT_TYPES from "@/enums/effectEndTypes";
-import CONDITIONS from "@/enums/conditions";
-import DragAdjust from "@/components/ui/DragAdjust";
+import Vue from 'vue';
+import EFFECT_TYPES from '@/enums/effectEndTypes';
+import CONDITIONS from '@/enums/conditions';
+import DragAdjust from '@/components/ui/DragAdjust';
 
 export default {
-  name: "EffectConstructor",
+  name: 'EffectConstructor',
   components: {
-    DragAdjust
+    DragAdjust,
   },
   data() {
     return {
@@ -106,8 +106,8 @@ export default {
         aftereffect: [],
         untilTheEndOfTurn: true,
         untilTheTargetsTurn: true,
-        endCondition: "",
-        effectDescription: "",
+        endCondition: '',
+        effectDescription: '',
         ongoingDamage: 0,
         regeneration: 0,
         conditions: [],
@@ -115,13 +115,13 @@ export default {
           ac: true,
           fort: true,
           ref: true,
-          will: true
+          will: true,
         },
         allDefensesChecked: true,
         isDefensesIndeterminate: false,
-        defenseModifier: 0
+        defenseModifier: 0,
       },
-      endTurn: 0
+      endTurn: 0,
     };
   },
   computed: {
@@ -129,22 +129,22 @@ export default {
       return (
         !this.effect.isDefensesIndeterminate && !this.effect.allDefensesChecked
       );
-    }
+    },
   },
   watch: {
-    "effect.conditions": "processChainedConditions"
+    'effect.conditions': 'processChainedConditions',
   },
   methods: {
     handleChangeAllDefenses(newValue) {
       Object.keys(this.effect.affectedDefenses).map(key =>
-        Vue.set(this.effect.affectedDefenses, key, newValue)
+        Vue.set(this.effect.affectedDefenses, key, newValue),
       );
       this.effect.isDefensesIndeterminate = false;
     },
     handleCheckDefense() {
       const defenseKeys = Object.keys(this.effect.affectedDefenses);
       const checkedCount = defenseKeys.filter(
-        key => this.effect.affectedDefenses[key]
+        key => this.effect.affectedDefenses[key],
       ).length;
       this.effect.allDefensesChecked = checkedCount === defenseKeys.length;
       this.effect.isDefensesIndeterminate =
@@ -165,7 +165,7 @@ export default {
               return false;
             }
             this.effect.conditions.push(chainedConditionId);
-          }
+          },
         );
       });
     },
@@ -174,8 +174,8 @@ export default {
     },
     submitEffect() {
       console.log(this.effect);
-    }
-  }
+    },
+  },
 };
 </script>
 

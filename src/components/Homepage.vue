@@ -5,20 +5,20 @@
 </template>
 
 <script>
-import Tracker from "@/components/Tracker";
-import Roller from "@/components/Roller";
+import Tracker from '@/components/Tracker';
+import Roller from '@/components/Roller';
 
 export default {
-  name: "HelloWorld",
+  name: 'HelloWorld',
   components: {
     Tracker,
     Roller,
   },
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      msg: 'Welcome to Your Vue.js App',
     };
-  }
+  },
 };
 </script>
 
