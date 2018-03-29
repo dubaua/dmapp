@@ -112,10 +112,30 @@ const mutations = {
   setCardUrl(state, { url }) {
     state.cardUrl = url;
   },
+  damage(state, { id, amount }) {
+    state.combatants[id].hp -= amount;
+  },
+  heal(state, { id, amount }) {
+    state.combatants[id].hp += amount;
+  },
+  applyTemporaryHP(state, { id, amount }) {
+    state.combatants[id].thp += amount;
+  },
+};
+
+const actions = {
+  // eslint-disable-next-line
+  processAttack({ state, commit }, impact) {
+    console.log('process attack', impact.hit.damage);
+    // apply hit impact on filtered combatants
+    commit('damage', { id: 1, amount: impact.hit.damage });
+    // then clear attack processing
+  },
 };
 
 export default {
   state,
   getters,
   mutations,
+  actions,
 };

@@ -101,53 +101,53 @@
           td Hit
           td
             drag-adjust(
-              v-model="hitResults.damage",
+              v-model="impact.hit.damage",
               :min="0",
               :max="100")
-              el-input(v-model="hitResults.damage")
+              el-input(v-model="impact.hit.damage")
           td
             drag-adjust(
-              v-model="hitResults.heal",
+              v-model="impact.hit.heal",
               :min="0",
               :max="100")
-              el-input(v-model="hitResults.heal")
+              el-input(v-model="impact.hit.heal")
           td
             drag-adjust(
-              v-model="hitResults.temporaryHP",
+              v-model="impact.hit.temporaryHP",
               :min="0",
               :max="100")
-              el-input(v-model="hitResults.temporaryHP")
+              el-input(v-model="impact.hit.temporaryHP")
           td
             el-button(type="text", icon="el-icon-plus") Add Effect on Hit
         tr
           td Miss
           td
             drag-adjust(
-              v-model="missResults.damage",
+              v-model="impact.miss.damage",
               :min="0",
               :max="100")
-              el-input(v-model="missResults.damage")
+              el-input(v-model="impact.miss.damage")
           td
             drag-adjust(
-              v-model="missResults.heal",
+              v-model="impact.miss.heal",
               :min="0",
               :max="100")
-              el-input(v-model="missResults.heal")
+              el-input(v-model="impact.miss.heal")
           td
             drag-adjust(
-              v-model="missResults.temporaryHP",
+              v-model="impact.miss.temporaryHP",
               :min="0",
               :max="100")
-              el-input(v-model="missResults.temporaryHP")
+              el-input(v-model="impact.miss.temporaryHP")
           td
             el-button(type="text", icon="el-icon-plus") Add Effect on Miss
-
+      el-button(type="primary", @click="processAttack(impact)") Process Attack
 </template>
 
 <script>
 import EffectConstructor from '@/components/EffectConstructor';
 import DragAdjust from '@/components/ui/DragAdjust';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'Tracker',
@@ -157,17 +157,19 @@ export default {
   },
   data() {
     return {
-      hitResults: {
-        damage: 0,
-        heal: 0,
-        temporaryHP: 0,
-        effects: {},
-      },
-      missResults: {
-        damage: 0,
-        heal: 0,
-        temporaryHP: 0,
-        effects: {},
+      impact: {
+        hit: {
+          damage: 0,
+          heal: 0,
+          temporaryHP: 0,
+          effects: {},
+        },
+        miss: {
+          damage: 0,
+          heal: 0,
+          temporaryHP: 0,
+          effects: {},
+        },
       },
     };
   },
@@ -175,6 +177,7 @@ export default {
     ...mapGetters('tracker', ['sortedCombatants']),
   },
   methods: {
+    ...mapActions('tracker', ['processAttack']),
     ...mapMutations('tracker', ['setInitiative', 'setTarget', 'setHit', 'setCardUrl']),
   },
 };
