@@ -89,7 +89,7 @@
 import Vue from 'vue';
 import EFFECT_TYPES from '@/enums/effectEndTypes';
 import CONDITIONS from '@/enums/conditions';
-import DragAdjust from '@/components/ui/DragAdjust';
+import DragAdjust from '@/components/DragAdjust';
 
 export default {
   name: 'EffectConstructor',

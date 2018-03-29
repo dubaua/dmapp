@@ -146,7 +146,7 @@
 
 <script>
 import EffectConstructor from '@/components/EffectConstructor';
-import DragAdjust from '@/components/ui/DragAdjust';
+import DragAdjust from '@/components/DragAdjust';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
