@@ -3,7 +3,6 @@
     @mousedown="supposeAdjastment",
     @touchstart="supposeAdjastment",
     @mouseup="clear",
-    @mouseleave="clear",
   )
     .draginput__overlay(
       v-if="isAdjusting",
