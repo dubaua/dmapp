@@ -26,24 +26,24 @@ const ADJUST_DELAY = 150;
 const LIMITER_MARGIN = 32;
 
 export default {
-  name: "DragInput",
+  name: 'DragInput',
   props: {
     value: {
       default: 0,
       type: Number,
-      required: true
+      required: true,
     },
     min: {
       default: 0,
-      type: Number
+      type: Number,
     },
     max: {
       default: 100,
-      type: Number
+      type: Number,
     },
     disabled: {
       default: false,
-      type: Boolean
+      type: Boolean,
     },
   },
   data() {
@@ -54,12 +54,12 @@ export default {
       inputEl: null,
       center: {
         x: 0,
-        y: 0
+        y: 0,
       },
       fader: {
         x: 0,
-        y: 0
-      }
+        y: 0,
+      },
     };
   },
   computed: {
@@ -71,16 +71,16 @@ export default {
           ww - this.center.x,
           this.center.x,
           wh - this.center.y,
-          this.center.y
+          this.center.y,
         ) - LIMITER_MARGIN
       );
     },
     faderRadius() {
       return Math.min(
         this.getRadiusByCoords(this.fader.x, this.fader.y),
-        this.limiterRadius
+        this.limiterRadius,
       );
-    }
+    },
   },
   methods: {
     // eslint-disable-next-line consistent-return
@@ -111,13 +111,13 @@ export default {
             this.min +
               this.getRadiusByCoords(x, y) /
                 this.limiterRadius *
-                (this.max - this.min)
-          )
+                (this.max - this.min),
+          ),
         );
       });
     },
     submit(e) {
-      this.$emit("input", this.temporaryValue);
+      this.$emit('input', this.temporaryValue);
       this.clear(e);
       e.stopPropagation();
     },
@@ -150,14 +150,14 @@ export default {
       this.fader = { x, y };
     },
     addTouchListeners() {
-      document.addEventListener("touchmove", this.adjust, false);
-      document.addEventListener("touchend", this.submit, false);
-      document.addEventListener("touchcancel", this.submit, false);
+      document.addEventListener('touchmove', this.adjust, false);
+      document.addEventListener('touchend', this.submit, false);
+      document.addEventListener('touchcancel', this.submit, false);
     },
     removeTouchListeners() {
-      document.removeEventListener("touchmove", this.adjust, false);
-      document.removeEventListener("touchend", this.submit, false);
-      document.removeEventListener("touchcancel", this.submit, false);
+      document.removeEventListener('touchmove', this.adjust, false);
+      document.removeEventListener('touchend', this.submit, false);
+      document.removeEventListener('touchcancel', this.submit, false);
     },
     getEventCoords(e) {
       const x = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
@@ -173,8 +173,8 @@ export default {
         top: ${this.center.y}px;
         width: ${radius * 2}px;
         height: ${radius * 2}px;`;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,22 +1,22 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Homepage from "@/components/Homepage";
-import Test from "@/components/Test";
+import Vue from 'vue';
+import Router from 'vue-router';
+import Homepage from '@/components/Homepage';
+import Test from '@/components/Test';
 
 Vue.use(Router);
 
 export default new Router({
-  mode: "history",
+  mode: 'history',
   routes: [
     {
-      path: "/",
-      name: "Homepage",
-      component: Homepage
+      path: '/',
+      name: 'Homepage',
+      component: Homepage,
     },
     {
-      path: "/test",
-      name: "test",
-      component: Test
-    }
-  ]
+      path: '/test',
+      name: 'test',
+      component: Test,
+    },
+  ],
 });

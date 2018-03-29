@@ -4,7 +4,7 @@ const state = {
   combatants: {
     1: {
       id: 1,
-      name: "Mob 1",
+      name: 'Mob 1',
       initiative: 17,
       ac: 20,
       fort: 20,
@@ -16,13 +16,13 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url Mob 1"
+        path: 'url Mob 1',
       },
-      isPlayer: false
+      isPlayer: false,
     },
     2: {
       id: 2,
-      name: "Mob 2",
+      name: 'Mob 2',
       initiative: 8,
       ac: 20,
       fort: 20,
@@ -34,13 +34,13 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url Mob 2"
+        path: 'url Mob 2',
       },
-      isPlayer: false
+      isPlayer: false,
     },
     3: {
       id: 3,
-      name: "Mob 3",
+      name: 'Mob 3',
       initiative: 16,
       ac: 15,
       fort: 15,
@@ -52,13 +52,13 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url Mob 3"
+        path: 'url Mob 3',
       },
-      isPlayer: false
+      isPlayer: false,
     },
     nerilee: {
-      id: "nerilee",
-      name: "Nerilee",
+      id: 'nerilee',
+      name: 'Nerilee',
       initiative: 17,
       ac: 15,
       fort: 15,
@@ -70,13 +70,13 @@ const state = {
       hit: false,
       effects: [],
       card: {
-        path: "url Mob 3"
+        path: 'url Mob 3',
       },
-      isPlayer: true
-    }
+      isPlayer: true,
+    },
   },
-  cardUrl: "",
-  turn: 0
+  cardUrl: '',
+  turn: 0,
 };
 
 const getters = {
@@ -88,7 +88,7 @@ const getters = {
       .sort((a, b) => b.initiative - a.initiative || b.isPlayer - a.isPlayer),
   targets: (state, getters) => getters.combatants.filter(c => c.target),
   hit: (state, getters) => getters.targets.filter(c => c.hit),
-  miss: (state, getters) => getters.targets.filter(c => !c.hit)
+  miss: (state, getters) => getters.targets.filter(c => !c.hit),
 };
 
 const mutations = {
@@ -111,11 +111,11 @@ const mutations = {
   },
   setCardUrl(state, { url }) {
     state.cardUrl = url;
-  }
+  },
 };
 
 export default {
   state,
   getters,
-  mutations
+  mutations,
 };
