@@ -211,6 +211,7 @@ export default {
     padding: 0 5px;
     display: flex;
     align-items: center;
+    font-size: 13px;
   }
   &.is-center {
     & .cell {
