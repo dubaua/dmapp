@@ -20,7 +20,7 @@ import {
   // ColorPicker,
   // Container,
   // DatePicker,
-  // Dialog,
+  Dialog,
   // Dropdown,
   // DropdownItem,
   // DropdownMenu,
@@ -99,7 +99,7 @@ Vue.use(CheckboxButton);
 // Vue.use(ColorPicker);
 // Vue.use(Container);
 // Vue.use(DatePicker);
-// Vue.use(Dialog);
+Vue.use(Dialog);
 // Vue.use(Dropdown);
 // Vue.use(DropdownItem);
 // Vue.use(DropdownMenu);

@@ -118,7 +118,14 @@
               :max="100")
               el-input(v-model="impact.hit.temporaryHP")
           td
-            el-button(type="text", icon="el-icon-plus") Add Effect on Hit
+            effects(
+              :effects="impact.hit.effects",
+              @remove="removeEffect")
+            effect-constructor(
+              button-text="Add Effect on Hit",
+              title="Effect on Hit",
+              @change="setHitEffect"
+            )
         tr
           td Miss
           td
@@ -140,7 +147,14 @@
               :max="100")
               el-input(v-model="impact.miss.temporaryHP")
           td
-            el-button(type="text", icon="el-icon-plus") Add Effect on Miss
+            effects(
+              :effects="impact.miss.effects",
+              @remove="removeEffect")
+            effect-constructor(
+              button-text="Add Effect on Miss",
+              title="Effect on Miss",
+              @change="setMissEffect"
+            )
       el-button(type="primary", @click="processAttack(impact)") Process Attack
 </template>
 
@@ -156,13 +170,13 @@ export default {
           damage: 0,
           heal: 0,
           temporaryHP: 0,
-          effects: {},
+          effects: [],
         },
         miss: {
           damage: 0,
           heal: 0,
           temporaryHP: 0,
-          effects: {},
+          effects: [],
         },
       },
     };
@@ -173,6 +187,18 @@ export default {
   methods: {
     ...mapActions('tracker', ['processAttack']),
     ...mapMutations('tracker', ['setInitiative', 'setTarget', 'setHit', 'setCardUrl']),
+    setHitEffect(effect) {
+      this.setEffect('hit', effect);
+    },
+    setMissEffect(effect) {
+      this.setEffect('miss', effect);
+    },
+    setEffect(key, effect) {
+      this.impact[key].effects.push(effect);
+    },
+    removeEffect(id) {
+      console.log(id); // eslint-disable-line
+    },
   },
 };
 </script>

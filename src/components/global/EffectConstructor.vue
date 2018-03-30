@@ -1,91 +1,108 @@
 <template lang="pug">
-  //- ec stands for effect constructor
-  .ec
-    h1 Effect constructor
-    .ec__row.ec__row--major
-      .ec__row
-        .ec__label Describe how effect ends
-        el-radio-group(v-model="effect.chosenType")
-          el-radio-button(:label="0") Save ends
-          el-radio-button(:label="1") Temporary
-          el-radio-button(:label="2") Conditional
-      .ec__row(
-        v-if="effect.chosenType === types.SAVE_ENDS || effect.chosenType === types.CONDITIONAL")
-        .ec__label Ongoing
+//- ec stands for effect constructor
+.ec
+  el-button(
+    @click="openConstructor",
+    type="text",
+    icon="el-icon-plus",) {{buttonText}}
+  el-dialog(
+    :visible.sync="isConstructorVisible",
+    :title="title",
+    :modal="false",
+    fullscreen,
+    append-to-body,
+  )
+    .ec__body
+      .ec__row.ec__row--major
+        .ec__row
+          .ec__label Describe how effect ends
+          el-radio-group(v-model="effect.chosenType")
+            el-radio-button(:label="0") Save ends
+            el-radio-button(:label="1") Temporary
+            el-radio-button(:label="2") Conditional
+        .ec__row(
+          v-if="effect.chosenType === types.SAVE_ENDS || effect.chosenType === types.CONDITIONAL")
+          .ec__label Ongoing
+          drag-adjust(
+            v-model="effect.ongoingDamage",
+            :min="0",
+            :max="25")
+            el-input(v-model="effect.ongoingDamage")
+          .ec__label damage
+        .ec__row(
+          v-if="effect.chosenType === types.SAVE_ENDS || effect.chosenType === types.CONDITIONAL")
+          .ec__label Regeneration of
+          drag-adjust(
+            v-model="effect.regeneration",
+            :min="0",
+            :max="25")
+            el-input(v-model="effect.regeneration")
+        .ec__row(v-if="effect.chosenType === types.SAVE_ENDS")
+          effect-constructor(
+              button-text="Add Fail Effect",
+              title="Effect on Fail",
+            )
+          effect-constructor(
+              button-text="Add Aftereffect",
+              title="Effect on Aftereffect",
+            )
+        .ec__row(v-if="effect.chosenType === types.TEMPORARY")
+          .ec__label Lasts until
+          el-radio-group(v-model="effect.untilTheEndOfTurn")
+            el-radio-button(:label="true") the end
+            el-radio-button(:label="false") the start
+          .ec__label of
+          el-radio-group(v-model="effect.untilTheTargetsTurn")
+            el-radio-button(:label="true") the target's
+            el-radio-button(:label="false") the caster's
+          .ec__label turn
+        .ec__row(v-if="effect.chosenType === types.CONDITIONAL")
+          el-input(
+            v-model="effect.endCondition",
+            placeholder="Describe the end condition",
+            class="ec__text-input")
+      .ec__row.ec__row--major
+        el-input(v-model="effect.effectDescription", placeholder="Effect description")
+      .ec__row.ec__row--major
+        el-checkbox-group(
+          v-model="effect.conditions",
+          class="el-checkbox-group--flex",
+          )
+          el-checkbox(
+            v-for="condition in conditions",
+            :label="condition.id",
+            border,
+            :key="condition.id") {{condition.title}}
+          el-button(
+            type="text",
+            icon="el-icon-close",
+            @click="resetConditions") Reset conditions
+      .ec__row.ec__row--major
         drag-adjust(
-          v-model="effect.ongoingDamage",
-          :min="0",
-          :max="25")
-          el-input(v-model="effect.ongoingDamage")
-        .ec__label damage
-      .ec__row(
-        v-if="effect.chosenType === types.SAVE_ENDS || effect.chosenType === types.CONDITIONAL")
-        .ec__label Regeneration of
-        drag-adjust(
-          v-model="effect.regeneration",
-          :min="0",
-          :max="25")
-          el-input(v-model="effect.regeneration")
-      .ec__row(v-if="effect.chosenType === types.SAVE_ENDS")
-        el-button(type="text", icon="el-icon-plus") Add Fail Effect
-        el-button(type="text", icon="el-icon-plus") Add Aftereffect
-      .ec__row(v-if="effect.chosenType === types.TEMPORARY")
-        .ec__label Lasts until
-        el-radio-group(v-model="effect.untilTheEndOfTurn")
-          el-radio-button(:label="true") the end
-          el-radio-button(:label="false") the start
-        .ec__label of
-        el-radio-group(v-model="effect.untilTheTargetsTurn")
-          el-radio-button(:label="true") the target's
-          el-radio-button(:label="false") the caster's
-        .ec__label turn
-      .ec__row(v-if="effect.chosenType === types.CONDITIONAL")
-        el-input(
-          v-model="effect.endCondition",
-          placeholder="Describe the end condition",
-          class="ec__text-input")
-    .ec__row.ec__row--major
-      el-input(v-model="effect.effectDescription", placeholder="Effect description")
-    .ec__row.ec__row--major
-      el-checkbox-group(
-        v-model="effect.conditions",
-        class="el-checkbox-group--flex",
-        )
+          v-model="effect.defenseModifier",
+          :min="-10",
+          :max="10",
+          :disabled="isDefenseModifierDisabled")
+          el-input(v-model="effect.defenseModifier", :disabled="isDefenseModifierDisabled")
         el-checkbox(
-          v-for="condition in conditions",
-          :label="condition.id",
+          v-for="(value, key, index) in effect.affectedDefenses",
+          v-model="effect.affectedDefenses[key]",
+          @change="handleCheckDefense",
           border,
-          :key="condition.id") {{condition.title}}
-        el-button(
-          type="text",
-          icon="el-icon-close",
-          @click="resetConditions") Reset conditions
-    .ec__row.ec__row--major
-      drag-adjust(
-        v-model="effect.defenseModifier",
-        :min="-10",
-        :max="10",
-        :disabled="isDefenseModifierDisabled")
-        el-input(v-model="effect.defenseModifier", :disabled="isDefenseModifierDisabled")
-      el-checkbox(
-        v-for="(value, key, index) in effect.affectedDefenses",
-        v-model="effect.affectedDefenses[key]",
-        @change="handleCheckDefense",
-        border,
-        class="el-checkbox--compact",
-        :key="index") {{ key.toUpperCase() }}
-      el-checkbox(
-        :indeterminate="effect.isDefensesIndeterminate",
-        v-model="effect.allDefensesChecked",
-        @change="handleChangeAllDefenses"
-        class="el-checkbox--compact") {{ effect.allDefensesChecked ? 'Uncheck all' : 'Check all'}}
-    .ec__row.ec__row--major
-      el-button(type="text") Cancel
-      el-button(type="success", @click="submitEffect") Submit effect
+          class="el-checkbox--compact",
+          :key="index") {{ key.toUpperCase() }}
+        el-checkbox(
+          :indeterminate="effect.isDefensesIndeterminate",
+          v-model="effect.allDefensesChecked",
+          @change="handleChangeAllDefenses"
+          class="el-checkbox--compact") {{ effect.allDefensesChecked ? 'Uncheck all' : 'Check all'}}
+    footer(slot="footer")
+      .ec__row.ec__row--major
+        el-button(type="text", @click="closeConstructor") Cancel
+        el-button(type="success", @click="submitEffect") Submit effect
 </template>
 
 <script>
-/* eslint-disable no-console */
 import Vue from 'vue';
 import EFFECT_TYPES from '@/enums/effectEndTypes';
 import CONDITIONS from '@/enums/conditions';
@@ -94,6 +111,7 @@ export default {
   name: 'EffectConstructor',
   data() {
     return {
+      isConstructorVisible: false,
       types: EFFECT_TYPES,
       conditions: CONDITIONS.properties,
       effect: {
@@ -119,6 +137,16 @@ export default {
       },
       endTurn: 0,
     };
+  },
+  props: {
+    buttonText: {
+      type: String,
+      default: 'Add Effect',
+    },
+    title: {
+      type: String,
+      default: 'Effect Constructor',
+    },
   },
   computed: {
     isDefenseModifierDisabled() {
@@ -153,10 +181,10 @@ export default {
           (chainedConditionId) => {
             if (
               // do not add existed condition
-              (this.effect.conditions.indexOf(chainedConditionId) !== -1) ||
+              this.effect.conditions.indexOf(chainedConditionId) !== -1 ||
               // do not fall prone in already petrified
               (this.effect.conditions.indexOf(CONDITIONS.PETRIFIED) !== -1 &&
-              chainedConditionId === CONDITIONS.PRONE)
+                chainedConditionId === CONDITIONS.PRONE)
             ) {
               return false;
             }
@@ -168,8 +196,16 @@ export default {
     resetConditions() {
       this.effect.conditions.splice(0, this.effect.conditions.length);
     },
+    openConstructor() {
+      this.isConstructorVisible = true;
+    },
+    closeConstructor() {
+      this.isConstructorVisible = false;
+    },
     submitEffect() {
-      console.log(this.effect);
+      this.$emit('change', this.effect);
+      // clear the effect
+      this.closeConstructor();
     },
   },
 };
@@ -181,8 +217,9 @@ export default {
 $spacing: 8px;
 
 .ec {
-  overflow: hidden;
-
+  &__body {
+    overflow: hidden;
+  }
   &__row {
     display: flex;
     flex-wrap: wrap;
